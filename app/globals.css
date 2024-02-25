@@ -1,0 +1,19 @@
+:root {
+  --background-color: #000000;
+  --theme-color: #94B4FA;
+  --theme-color-darker: #7D95CE;
+  --theme-color-darkest: #657CB3;
+}
+
+body {
+  background: var(--background-color);
+  color: var(--theme-color);
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+  margin: 0px auto;
+}

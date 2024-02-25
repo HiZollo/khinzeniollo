@@ -8,14 +8,22 @@ export default async function Home() {
   
   if (!session) {
     return (
-      <LoginButton />
+      <>
+        <Title />
+        <LoginButton />
+      </>
     )
   }
 
   return (
     <>
-      Hello, {session.user!.name} ({session.user!.id})!
+      <Title />
+      Hola, {session.user!.name}
       <LogoutButton />
     </>
   )
+}
+
+function Title() {
+  return <h1>Khinzeniollo</h1>
 }

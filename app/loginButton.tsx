@@ -1,14 +1,16 @@
 'use client'
 import { signIn, signOut } from 'next-auth/react'
+import Button from '@/components/button'
+import styles from './loginButton.module.css'
 
 export function LoginButton() {
   return (
-    <button onClick={() => signIn('discord')}>Sign In</button>
+    <Button onClick={() => signIn('discord')}>Iniciar sesión</Button>
   )
 }
 
 export function LogoutButton() {
   return (
-    <button onClick={() => signOut()}>Sign Out</button>
+    <Button onClick={() => signOut()}>Cerrar sesión</Button>
   )
 }
