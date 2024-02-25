@@ -5,12 +5,12 @@ import styles from './loginButton.module.css'
 
 export function LoginButton() {
   return (
-    <Button onClick={() => signIn('discord')}>Iniciar sesión</Button>
+    <Button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} onClick={() => signIn('discord')}>Iniciar sesión</Button>
   )
 }
 
 export function LogoutButton() {
   return (
-    <Button onClick={() => signOut()}>Cerrar sesión</Button>
+    <Button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} onClick={() => signOut()}>Cerrar sesión</Button>
   )
 }

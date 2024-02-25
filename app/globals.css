@@ -8,12 +8,17 @@
 body {
   background: var(--background-color);
   color: var(--theme-color);
+  padding: 24px;
 }
 
 #main {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 32px;
   align-items: center;
   margin: 0px auto;
+}
+
+a {
+  text-decoration: none;
 }

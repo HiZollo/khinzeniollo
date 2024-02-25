@@ -1,4 +1,5 @@
 import styles from './button.module.css'
+import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
 
 interface ButtonParam {
@@ -8,8 +9,8 @@ interface ButtonParam {
 
 export default function Button({ children, ...rest }: ButtonParam) {
   return (
-    <div className={styles.button} {...rest}>
+    <motion.div className={styles.button} {...rest}>
       {children}
-    </div>
+    </motion.div>
   )
 }
