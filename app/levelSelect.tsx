@@ -1,8 +1,7 @@
 'use client';
-import { useState, useRef } from "react"
+import { useState, useRef } from 'react'
 import Link from 'next/link'
-import { useMotionValueEvent, useScroll } from 'framer-motion';
-import { motion } from 'framer-motion';
+import { useMotionValueEvent, useScroll, motion } from 'framer-motion';
 import styles from './levelSelect.module.css'
 import { BlankDiv } from '@/components/blankDiv'
 import $ from 'clsx'
@@ -82,5 +81,5 @@ export const StickyScroll = ({
         </Link>
       </div>
     </motion.div>
-  );
-};
+  )
+}
