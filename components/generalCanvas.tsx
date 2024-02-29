@@ -70,8 +70,7 @@ export default function GeneralCanvas() {
     if (canvasRef.current) {
       const canvas = new Canvas(canvasRef.current)
       canvas.start(() => {
-        canvas.ctx.fillStyle = "rgb(0 0 0)"
-        canvas.ctx.fillRect(0, 0, SIZE, SIZE)
+        canvas.ctx.clearRect(0, 0, SIZE, SIZE)
 
         canvas.ctx.fillStyle = "rgb(200 0 0)"
         Object.values(points).forEach(p => {
@@ -102,8 +101,8 @@ export default function GeneralCanvas() {
           let dx = points[b].x - points[a].x
           let dy = points[b].y - points[a].y
           const len = Math.sqrt(dx*dx + dy*dy)
-          dx /= len * 50 * (len > (SIZE / 2) ? 1 : -1)
-          dy /= len * 50 * (len > (SIZE / 2) ? 1 : -1)
+          dx /= len * 100 * (len > (SIZE / 2) ? 1 : -1)
+          dy /= len * 100 * (len > (SIZE / 2) ? 1 : -1)
           points[a].vx += dx
           points[a].vy += dy
           points[b].vx -= dx
