@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Providers } from "./provider"
 import "./globals.css";
+import { Ubuntu } from 'next/font/google'
+
+const ubuntu = Ubuntu({
+  weight: '400',
+  subsets: ['latin']
+})
 
 export const metadata: Metadata = {
   title: "Khinzeniollo",
@@ -14,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>
+      <body className={ubuntu.className}>
         <Providers>
           <main id="main">
             {children}

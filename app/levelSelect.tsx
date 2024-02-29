@@ -64,7 +64,7 @@ export const StickyScroll = ({
               </motion.p>
             </div>
           ))}
-          <BlankDiv height="50px" />
+          <BlankDiv height="55px" />
         </div>
       </div>
       <div className={styles.right}>

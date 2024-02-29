@@ -1,7 +1,6 @@
 #background {
   position: fixed;
   opacity: 0.15;
-  font-family: 'Roboto Mono';
   font-size: 500px;
   z-index: -1;
   user-select: none;
