@@ -82,11 +82,11 @@ export default function GeneralCanvas() {
 
           if (!(0 <= p.x && p.x <= SIZE)) {
             p.x = Math.min(Math.max(p.x, 0), SIZE)
-            p.vx = -p.vx
+            p.vx = 0
           }
           if (!(0 <= p.y && p.y <= SIZE)) {
             p.y = Math.min(Math.max(p.y, 0), SIZE)
-            p.vy = -p.vy
+            p.vy = 0
           }
         })
 
@@ -100,15 +100,56 @@ export default function GeneralCanvas() {
 
           let dx = points[b].x - points[a].x
           let dy = points[b].y - points[a].y
-          const len = Math.sqrt(dx*dx + dy*dy)
-          dx /= len * 100 * (len > (SIZE / 2) ? 1 : -1)
-          dy /= len * 100 * (len > (SIZE / 2) ? 1 : -1)
-          points[a].vx += dx
-          points[a].vy += dy
-          points[b].vx -= dx
-          points[b].vy -= dy
+          const len = Math.max(Math.sqrt(dx*dx + dy*dy), 1)
+          if (len > 0) {
+            dx *= 0.001 * (len - SIZE / 5) / len
+            dy *= 0.001 * (len - SIZE / 5) / len
+            points[a].vx += dx
+            points[a].vy += dy
+            points[b].vx -= dx
+            points[b].vy -= dy
+          }
         })
+
+        europe.forEach(c => {
+          const neighbor: EuropeCountries[] = []
+          edges.forEach(([a, b]) => {
+            if (a == c) {
+              neighbor.push(b)
+            }
+            if (b == c) {
+              neighbor.push(a)
+            }
+          })
+
+          neighbor.forEach(n1 => {
+            neighbor.forEach(n2 => {
+              if (n1 != n2) {
+                let dx = points[n2].x - points[n1].x
+                let dy = points[n2].y - points[n1].y
+                const len = Math.max(Math.sqrt(dx*dx + dy*dy), 1)
+                if (len > 0) {
+                  dx *= 1 / (len ** 3)
+                  dy *= 1 / (len ** 3)
+                  points[n1].vx -= dx
+                  points[n1].vy -= dy
+                  points[n2].vx += dx
+                  points[n2].vy += dy
+                }
+              } 
+            })
+          })
+        })
+
+        // europe.forEach(c => {
+        //   points[c].vx *= 0.9999
+        //   points[c].vy *= 0.9999
+        // })
       })
+
+      return () => {
+        canvas.destroy()
+      }
     }
   })
 
@@ -124,7 +165,7 @@ export default function GeneralCanvas() {
 class Canvas {
   public canvas: HTMLCanvasElement
   public ctx: CanvasRenderingContext2D
-
+  public dead: boolean
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -132,14 +173,21 @@ class Canvas {
     const ctx = canvas.getContext("2d")
     if (!ctx) throw new Error("Your browser doesn't support canvas!")
     this.ctx = ctx;
+
+    this.dead = false
   }
 
   start(_draw: () => void) {
     const draw = () => {
+      if (this.dead) return
       _draw()
       requestAnimationFrame(draw)
     }
     requestAnimationFrame(draw)
+  }
+
+  destroy() {
+    this.dead = true
   }
 }
 
