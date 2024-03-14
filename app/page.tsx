@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { LoginButton, LogoutButton } from './loginButton'
 import { StickyScroll } from './levelSelect'
+import { WelcomeText } from './welcomeText'
 import { Session } from 'next-auth'
 import { BlankDiv } from '@/components/blankDiv'
 import iota from '@/utils/iota'
@@ -32,6 +33,7 @@ export default async function Home() {
   return (
     <>
       <Title />
+      <WelcomeText />
       <StickyScroll content={content} />
       <BlankDiv height="120px" />
       <LogoutButton />
