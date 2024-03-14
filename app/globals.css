@@ -17,6 +17,7 @@ body {
   gap: 32px;
   align-items: center;
   margin: 0px auto;
+  text-align: center;
 }
 
 a {
