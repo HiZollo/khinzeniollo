@@ -23,3 +23,7 @@ body {
 a {
   text-decoration: none;
 }
+
+section h1 {
+  font-size: 2em;
+}

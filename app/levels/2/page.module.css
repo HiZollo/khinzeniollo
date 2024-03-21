@@ -1,0 +1,6 @@
+.buttons {
+  display: flex;
+  flex-direction: row;
+  margin: 24px 0;
+  justify-content: space-around;
+}
