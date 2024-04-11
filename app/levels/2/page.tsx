@@ -1,4 +1,5 @@
 'use client'
+import { signOut } from 'next-auth/react'
 import { useSession } from 'next-auth/react'
 import Input from '@/components/TextInput'
 import Button from '@/components/button'
@@ -35,6 +36,25 @@ export default function Dos() {
         alert(text)
       })
   }
+
+  const nrms: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (hash !== answerHash)  {
+      alert('真的不鐪熺殑涓嶈浜嗗棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡棊鍡庡')
+      signOut()
+      return
+    }
+
+    fetch('/api/levels/2/getWord', {
+      body: `{"text":"${text}"}`,
+      cache: 'no-cache',
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(res => res.json()).then(data => {
+      alert(data.text)
+    })
+  }
   
   return (
     <>
@@ -43,7 +63,7 @@ export default function Dos() {
       <Input value={text} onChange={handleChange} />
       <div className={styles.buttons}>
         <Button onClick={handleClick}>治得好</Button>
-        { hash === answerHash && <Button>治不好了</Button> }
+        { hash === answerHash && <Button onClick={nrms}>治不好了</Button> }
       </div>
     </>
   )
