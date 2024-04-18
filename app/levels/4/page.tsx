@@ -1,6 +1,6 @@
 "use client"
 
-import GeneralCanvas from "@/components/generalCanvas";
+import GeneralCanvas from "@/components/generalCanvas"
 
 export default function Cuatro() {
   return (
@@ -27,193 +27,292 @@ type Regions = ArrayElement<typeof regions>
 type Provinces = ArrayElement<typeof provinces>
 
 const SIZE = 600
+const SPRING_LEN = 40
 
 const regions = [
-  "Andalusia_r", "Aragon_r", "Asturias_r", "Basque Country_r", "Cantabria_r", 
-  "Castile and Leon_r", "Castilla-La Mancha_r", "Catalonia_r", "Extremadura_r", 
-  "Galicia_r", "La Rioja_r", "Madrid_r", "Murcia_r", "Navarre_r", "Valencia_r"
+  'c252714bb6bce3536805d06af8c7173d_r', '82139a2b169d3732fc9f2dc417f7c2d6_r',
+  'd104ad307af87a256e7303b8a7e786d5_r', '9b05b095e0eda1d9d84a0405b334226d_r',
+  '6b7ea5b50d33352a04b7eab37f43b6b8_r', '7f93e6c16e70fa303f21badc12a686a3_r',
+  'd1d230610229af5e415c4ac97754cf19_r', '18d0dc3a82f798d19c9d4ede8253ef9d_r',
+  '439a25f17d3ab976423ea90669684104_r', '7802463c9c580cdf31bdb3b3d885cdb9_r',
+  '554d9c9bc3a4924b90d7b66f71b8b177_r', 'fabbd91210b9f49102b12b4446fd1858_r',
+  '000e077d1a29a24f36a8b705dc821ee1_r', '96273221e25bde2eb704da1a5541dddf_r',
+  '0247805523ffe1caa6994fac064f6a34_r'
 ] as const
 
 const provinces = [
-  "Alava_p", "Albacete_p", "Alicante_p", "Almeria_p", "Asturias_p", "Avila_p", 
-  "Badajoz_p", "Barcelona_p", "Biscay_p", "Burgos_p", "Caceres_p", 
-  "Cadiz_p", "Cantabria_p", "Castellon_p", "Ciudad Real_p", "Cordoba_p", "Cuenca_p", 
-  "Gerona_p", "Granada_p", "Guadalajara_p", "Gipuzcoa_p", "Huelva_p", "Huesca_p", "Jaen_p", 
-  "La Coruna_p", "Leon_p", "Lerida_p", "Lugo_p", "Madrid_p", "Malaga_p", "Murcia_p", 
-  "Navarre_p", "Orense_p", "Palencia_p", "Pontevedra_p", "La Rioja_p", "Salamanca_p", 
-  "Segovia_p", "Seville_p", "Soria_p", "Tarragona_p", 
-  "Teruel_p", "Toledo_p", "Valencia_p", "Valladolid_p", "Vizcaya_p", "Zamora_p", "Zaragoza_p"
+  '2271d7380ae256d854e0a776023240db_p', 'cb7a490cc9578d1fa5f878f011a19a51_p',
+  'f515adc321b21b60757227a70e7a65c1_p', 'fd29408948e281040b1f1d83280c9bd1_p',
+  '8a739c3989f0aec5601eed64f2afe068_p', '27cb40e4e292d6ee2c07fd6f302f0aa4_p',
+  '54c7e0f5bd8e341f6f0766abbf8275f6_p', '7d3a2aa844806c54f07742ee05834106_p',
+  'fd65da722a029873727925c51eaaebed_p', '9cbfaddc9bfb5efe83839ce449ce76c5_p',
+  '7ca67b999c317da24710b6020b7cad4e_p', 'd95dece36f36461f37716d2a48636d5e_p',
+  '575159712bf8d133d6badecc4b7dbfc4_p', '62cba08733a42bfb31a600fac8c6886f_p',
+  '333a9c1d0d3aa77690e54501f101813d_p', '6b55512a55369619ea879473217795a0_p',
+  'bcf5e62ea62812b9854b8d677d03a101_p', '61007e8d55d16366af9e8807b9e520d1_p',
+  '08b21026a8c23e000c0a63243914b6b4_p', '93f477335c956c694c6770f8830f8be2_p',
+  '2df9ace242625cbdae561521d657c151_p', '101835b1a2cb20929bbe6966087f09cb_p',
+  '49786e9dccad1b5e1a76dff4508c3166_p', '0ea21b3e513cfb6a47fb3c06b7980ff4_p',
+  'cce0b28c11f99bf22405764d503c7f80_p', 'ad1418343dec8236377353ecf7e6621e_p',
+  'bbc19a07a765996c66b6b80cccd84074_p', '6e82355ca496d65a41b3fc8c4fb97b7e_p',
+  'bc12ea08787501ca4f02ba6d3ac683c7_p', 'a31494053b4be5d181bb2682e05f9b6f_p',
+  'e09fb018d905724ee425526b2bb0b1be_p', '30bcea2d8404926fb48500fa77528bdf_p',
+  '3f4102eee6e969e0dd5ecc989c79ac4d_p', 'fd792379fd986e4322ecf5ab13d6f783_p',
+  'ed0be09b4d0881151fab608b0ec68c1d_p', '924782a638b7b3dc5c6f128b225a3bd2_p',
+  'b82b3600a0ab24a33b270aa44a97a83e_p', '219a3d8fed290a273da12ec738d05d4d_p',
+  '160dc4cd7120eb4004e16ec92f829612_p', '045c08779250a36bf855a11d0dceac60_p',
+  'ab164f493fc47d40596aa5193c2f5534_p', 'b4455439858ebd30588da0cb43fe9b80_p',
+  'df2b829040ff33eeaa3c9199c893b98e_p', '8480322f38d10513a3a5bb43f9733f1f_p',
+  '669067387ff48731ed672c279263b312_p', '11ed042f789f039d3578365ae2c97da1_p',
+  'dcb9cf5ef3f9e75df79fbed4e8806e03_p', '6f6d022f6c2a1f53274a756c0db6d7d7_p'
 ] as const
 
-const largeEdges: [Regions, Regions][]  = [
-  ["Galicia_r", "Asturias_r"], ["Galicia_r", "Castile and Leon_r"], 
-  ["Asturias_r", "Cantabria_r"], ["Asturias_r", "Castile and Leon_r"], 
-  ["Cantabria_r", "Basque Country_r"], ["Cantabria_r", "Castile and Leon_r"], 
-  ["Basque Country_r", "Navarre_r"], ["Basque Country_r", "Castile and Leon_r"], ["Basque Country_r", "La Rioja_r"], 
-  ["Navarre_r", "La Rioja_r"], ["Navarre_r", "Aragon_r"], 
-  ["Castile and Leon_r", "La Rioja_r"], ["Castile and Leon_r", "Aragon_r"], ["Castile and Leon_r", "Madrid_r"], 
-  ["Castile and Leon_r", "Castilla-La Mancha_r"], ["Castile and Leon_r", "Extremadura_r"], 
-  ["La Rioja_r", "Aragon_r"], 
-  ["Aragon_r", "Catalonia_r"], ["Aragon_r", "Castilla-La Mancha_r"], ["Aragon_r", "Valencia_r"], 
-  ["Catalonia_r", "Valencia_r"], 
-  ["Madrid_r", "Castilla-La Mancha_r"], 
-  ["Castilla-La Mancha_r", "Extremadura_r"], ["Castilla-La Mancha_r", "Valencia_r"], 
-  ["Castilla-La Mancha_r", "Andalusia_r"], ["Castilla-La Mancha_r", "Murcia_r"], 
-  ["Valencia_r", "Murcia_r"], 
-  ["Extremadura_r", "Andalusia_r"], 
-  ["Andalusia_r", "Murcia_r"]
+const answers: Provinces[] = [
+  '2df9ace242625cbdae561521d657c151_p', '30bcea2d8404926fb48500fa77528bdf_p',
+  '62cba08733a42bfb31a600fac8c6886f_p', 'ed0be09b4d0881151fab608b0ec68c1d_p',
+  '9cbfaddc9bfb5efe83839ce449ce76c5_p', 'dcb9cf5ef3f9e75df79fbed4e8806e03_p',
+  'cb7a490cc9578d1fa5f878f011a19a51_p', 'fd29408948e281040b1f1d83280c9bd1_p'
+] as const
+
+const largeEdges: [Regions, Regions][] = [
+  ['7802463c9c580cdf31bdb3b3d885cdb9_r', 'd104ad307af87a256e7303b8a7e786d5_r'],
+  ['7802463c9c580cdf31bdb3b3d885cdb9_r', '7f93e6c16e70fa303f21badc12a686a3_r'],
+  ['d104ad307af87a256e7303b8a7e786d5_r', '6b7ea5b50d33352a04b7eab37f43b6b8_r'],
+  ['d104ad307af87a256e7303b8a7e786d5_r', '7f93e6c16e70fa303f21badc12a686a3_r'],
+  ['6b7ea5b50d33352a04b7eab37f43b6b8_r', '9b05b095e0eda1d9d84a0405b334226d_r'],
+  ['6b7ea5b50d33352a04b7eab37f43b6b8_r', '7f93e6c16e70fa303f21badc12a686a3_r'],
+  ['9b05b095e0eda1d9d84a0405b334226d_r', '96273221e25bde2eb704da1a5541dddf_r'],
+  ['9b05b095e0eda1d9d84a0405b334226d_r', '7f93e6c16e70fa303f21badc12a686a3_r'],
+  ['9b05b095e0eda1d9d84a0405b334226d_r', '554d9c9bc3a4924b90d7b66f71b8b177_r'],
+  ['96273221e25bde2eb704da1a5541dddf_r', '554d9c9bc3a4924b90d7b66f71b8b177_r'],
+  ['96273221e25bde2eb704da1a5541dddf_r', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+  ['7f93e6c16e70fa303f21badc12a686a3_r', '554d9c9bc3a4924b90d7b66f71b8b177_r'],
+  ['7f93e6c16e70fa303f21badc12a686a3_r', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+  ['7f93e6c16e70fa303f21badc12a686a3_r', 'fabbd91210b9f49102b12b4446fd1858_r'],
+  ['7f93e6c16e70fa303f21badc12a686a3_r', 'd1d230610229af5e415c4ac97754cf19_r'],
+  ['7f93e6c16e70fa303f21badc12a686a3_r', '439a25f17d3ab976423ea90669684104_r'],
+  ['554d9c9bc3a4924b90d7b66f71b8b177_r', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+  ['82139a2b169d3732fc9f2dc417f7c2d6_r', '18d0dc3a82f798d19c9d4ede8253ef9d_r'],
+  ['82139a2b169d3732fc9f2dc417f7c2d6_r', 'd1d230610229af5e415c4ac97754cf19_r'],
+  ['82139a2b169d3732fc9f2dc417f7c2d6_r', '0247805523ffe1caa6994fac064f6a34_r'],
+  ['18d0dc3a82f798d19c9d4ede8253ef9d_r', '0247805523ffe1caa6994fac064f6a34_r'],
+  ['fabbd91210b9f49102b12b4446fd1858_r', 'd1d230610229af5e415c4ac97754cf19_r'],
+  ['d1d230610229af5e415c4ac97754cf19_r', '439a25f17d3ab976423ea90669684104_r'],
+  ['d1d230610229af5e415c4ac97754cf19_r', '0247805523ffe1caa6994fac064f6a34_r'],
+  ['d1d230610229af5e415c4ac97754cf19_r', 'c252714bb6bce3536805d06af8c7173d_r'],
+  ['d1d230610229af5e415c4ac97754cf19_r', '000e077d1a29a24f36a8b705dc821ee1_r'],
+  ['0247805523ffe1caa6994fac064f6a34_r', '000e077d1a29a24f36a8b705dc821ee1_r'],
+  ['439a25f17d3ab976423ea90669684104_r', 'c252714bb6bce3536805d06af8c7173d_r'],
+  ['c252714bb6bce3536805d06af8c7173d_r', '000e077d1a29a24f36a8b705dc821ee1_r']
 ]
 
 const smallEgdes: Record<Regions, [Provinces, Provinces | Regions][]> = {
-  "Andalusia_r": [
-    ["Huelva_p", "Seville_p"], ["Huelva_p", "Cadiz_p"], ["Seville_p", "Cordoba_p"], 
-    ["Seville_p", "Cadiz_p"], ["Seville_p", "Malaga_p"], ["Cordoba_p", "Jaen_p"], 
-    ["Cordoba_p", "Malaga_p"], ["Cordoba_p", "Granada_p"], ["Jaen_p", "Granada_p"], 
-    ["Cadiz_p", "Malaga_p"], ["Malaga_p", "Granada_p"], ["Granada_p", 'Almeria_p'], 
-
-    ["Huelva_p", "Extremadura_r"], ["Seville_p", "Extremadura_r"], 
-    ["Cordoba_p", "Extremadura_r"], ["Cordoba_p", "Castilla-La Mancha_r"], 
-    ["Jaen_p", "Castilla-La Mancha_r"], ["Granada_p", "Castilla-La Mancha_r"], 
-    ["Almeria_p", "Murcia_r"]
-  ], 
-  "Aragon_r": [
-    ["Huesca_p", "Zaragoza_p"], ["Zaragoza_p", "Teruel_p"], 
-
-    ["Huesca_p", "Navarre_r"], ["Huesca_p", "Catalonia_r"], 
-    ["Zaragoza_p", "Navarre_r"], ["Zaragoza_p", "La Rioja_r"], 
-    ["Zaragoza_p", "Castile and Leon_r"], ["Zaragoza_p", "Castilla-La Mancha_r"], 
-    ["Zaragoza_p", "Catalonia_r"], ["Teruel_p", "Catalonia_r"], 
-    ["Teruel_p", "Castilla-La Mancha_r"], ["Teruel_p", "Valencia_r"]
-  ], 
-  "Asturias_r": [
-    ["Asturias_p", "Galicia_r"], ["Asturias_p", "Cantabria_r"], 
-    ["Asturias_p", "Castile and Leon_r"], 
-  ], 
-  "Basque Country_r": [
-    ["Vizcaya_p", "Gipuzcoa_p"], ["Vizcaya_p", "Alava_p"], 
-    ["Gipuzcoa_p", "Alava_p"], 
-
-    ["Vizcaya_p", "Cantabria_r"], ["Vizcaya_p", "Castile and Leon_r"], 
-    ["Gipuzcoa_p", "Navarre_r"], ["Alava_p", "Navarre_r"], 
-    ["Alava_p", "Castile and Leon_r"], ["Alava_p", "La Rioja_r"]
-  ], 
-  "Cantabria_r": [
-    ["Cantabria_p", "Asturias_r"], ["Cantabria_p", "Basque Country_r"], 
-    ["Cantabria_p", "Castile and Leon_r"], 
-  ], 
-  "Castile and Leon_r": [
-    ["Leon_p", "Palencia_p"], ["Leon_p", "Zamora_p"], ["Leon_p", "Valladolid_p"], 
-    ["Palencia_p", "Burgos_p"], ["Palencia_p", "Valladolid_p"], 
-    ["Burgos_p", "Valladolid_p"], ["Burgos_p", "Segovia_p"], ["Burgos_p", "Soria_p"], 
-    ["Zamora_p", "Valladolid_p"], ["Zamora_p", "Salamanca_p"], 
-    ["Valladolid_p", "Segovia_p"], ["Valladolid_p", "Salamanca_p"], 
-    ["Valladolid_p", "Avila_p"], ["Segovia_p", "Soria_p"], ["Salamanca_p", "Avila_p"], 
-
-    ["Leon_p", "Galicia_r"], ["Leon_p", "Asturias_r"], ["Leon_p", "Cantabria_r"], 
-    ["Palencia_p", "Cantabria_r"], ["Burgos_p", "Cantabria_r"], 
-    ["Burgos_p", "Basque Country_r"], ["Burgos_p", "La Rioja_r"], 
-    ["Zamora_p", "Galicia_r"], ["Segovia_p", "Madrid_r"], 
-    ["Segovia_p", "Castilla-La Mancha_r"], ["Soria_p", "La Rioja_r"], 
-    ["Soria_p", "Aragon_r"], ["Soria_p", "Castilla-La Mancha_r"], 
-    ["Salamanca_p", "Extremadura_r"], ["Avila_p", "Madrid_r"], 
-    ["Avila_p", "Extremadura_r"], ["Avila_p", "Castilla-La Mancha_r"]
-  ], 
-  "Castilla-La Mancha_r": [
-    ["Guadalajara_p", "Cuenca_p"], ["Toledo_p", "Cuenca_p"], 
-    ["Toledo_p", "Ciudad Real_p"], ["Cuenca_p", "Ciudad Real_p"], 
-    ["Cuenca_p", "Albacete_p"], ["Ciudad Real_p", "Albacete_p"], 
-
-    ["Guadalajara_p", "Castile and Leon_r"], ["Guadalajara_p", "Madrid_r"], 
-    ["Guadalajara_p", "Aragon_r"], ["Toledo_p", "Madrid_r"], 
-    ["Toledo_p", "Extremadura_r"], ["Cuenca_p", "Aragon_r"], 
-    ["Cuenca_p", "Valencia_r"], ["Ciudad Real_p", "Extremadura_r"], 
-    ["Ciudad Real_p", "Andalusia_r"], ["Albacete_p", "Valencia_r"], 
-    ["Albacete_p", "Andalusia_r"], ["Albacete_p", "Murcia_r"]
-  ], 
-  "Catalonia_r": [
-    ["Lerida_p", "Gerona_p"], ["Lerida_p", "Tarragona_p"], 
-    ["Lerida_p", "Barcelona_p"], ["Gerona_p", "Barcelona_p"], 
-    ["Tarragona_p", "Barcelona_p"], 
-
-    ["Lerida_p", "Aragon_r"], ["Tarragona_p", "Aragon_r"], 
-    ["Tarragona_p", "Valencia_r"]
-  ], 
-  "Extremadura_r": [
-    ["Caceres_p", "Badajoz_p"], 
-
-    ["Caceres_p", "Castile and Leon_r"], ["Caceres_p", "Castilla-La Mancha_r"], 
-    ["Badajoz_p", "Castilla-La Mancha_r"], ["Badajoz_p", "Andalusia_r"]
-  ], 
-  "Galicia_r": [
-    ["La Coruna_p", "Lugo_p"], ["La Coruna_p", "Pontevedra_p"], 
-    ["Lugo_p", "Pontevedra_p"], ["Lugo_p", "Orense_p"], 
-    ["Pontevedra_p", "Orense_p"], 
-
-    ["Lugo_p", "Asturias_r"], ["Lugo_p", "Castile and Leon_r"], 
-    ["Orense_p", "Castile and Leon_r"]
-  ], 
-  "La Rioja_r": [
-    ["La Rioja_p", "Basque Country_r"], ["La Rioja_p", "Navarre_r"], 
-    ["La Rioja_p", "Castile and Leon_r"], ["La Rioja_p", "Aragon_r"], 
-  ], 
-  "Madrid_r": [
-    ["Madrid_p", "Castile and Leon_r"], ["Madrid_p", "Castilla-La Mancha_r"]
-  ], 
-  "Murcia_r": [
-    ["Murcia_p", "Castilla-La Mancha_r"], ["Murcia_p", "Valencia_r"], 
-    ["Murcia_p", "Andalusia_r"]
-  ], 
-  "Navarre_r": [
-    ["Navarre_p", "Basque Country_r"], ["Navarre_p", "La Rioja_r"], 
-    ["Navarre_p", "Aragon_r"], 
-  ], 
-  "Valencia_r": [
-    ["Castellon_p", "Valencia_p"], ["Valencia_p", "Alicante_p"], 
-
-    ["Castellon_p", "Catalonia_r"], ["Castellon_p", "Aragon_r"], 
-    ["Valencia_p", "Aragon_r"], ["Valencia_p", "Castilla-La Mancha_r"], 
-    ["Alicante_p", "Castilla-La Mancha_r"], ["Alicante_p", "Murcia_r"]
+  'c252714bb6bce3536805d06af8c7173d_r': [
+    ['101835b1a2cb20929bbe6966087f09cb_p', '160dc4cd7120eb4004e16ec92f829612_p'],
+    ['101835b1a2cb20929bbe6966087f09cb_p', 'd95dece36f36461f37716d2a48636d5e_p'],
+    ['160dc4cd7120eb4004e16ec92f829612_p', '6b55512a55369619ea879473217795a0_p'],
+    ['160dc4cd7120eb4004e16ec92f829612_p', 'd95dece36f36461f37716d2a48636d5e_p'],
+    ['160dc4cd7120eb4004e16ec92f829612_p', 'a31494053b4be5d181bb2682e05f9b6f_p'],
+    ['6b55512a55369619ea879473217795a0_p', '0ea21b3e513cfb6a47fb3c06b7980ff4_p'],
+    ['6b55512a55369619ea879473217795a0_p', 'a31494053b4be5d181bb2682e05f9b6f_p'],
+    ['6b55512a55369619ea879473217795a0_p', '08b21026a8c23e000c0a63243914b6b4_p'],
+    ['0ea21b3e513cfb6a47fb3c06b7980ff4_p', '08b21026a8c23e000c0a63243914b6b4_p'],
+    ['d95dece36f36461f37716d2a48636d5e_p', 'a31494053b4be5d181bb2682e05f9b6f_p'],
+    ['a31494053b4be5d181bb2682e05f9b6f_p', '08b21026a8c23e000c0a63243914b6b4_p'],
+    ['08b21026a8c23e000c0a63243914b6b4_p', 'fd29408948e281040b1f1d83280c9bd1_p'],
+    ['101835b1a2cb20929bbe6966087f09cb_p', '439a25f17d3ab976423ea90669684104_r'],
+    ['160dc4cd7120eb4004e16ec92f829612_p', '439a25f17d3ab976423ea90669684104_r'],
+    ['6b55512a55369619ea879473217795a0_p', '439a25f17d3ab976423ea90669684104_r'],
+    ['6b55512a55369619ea879473217795a0_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['0ea21b3e513cfb6a47fb3c06b7980ff4_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['08b21026a8c23e000c0a63243914b6b4_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['fd29408948e281040b1f1d83280c9bd1_p', '000e077d1a29a24f36a8b705dc821ee1_r']
+  ],
+  '82139a2b169d3732fc9f2dc417f7c2d6_r': [
+    ['49786e9dccad1b5e1a76dff4508c3166_p', '6f6d022f6c2a1f53274a756c0db6d7d7_p'],
+    ['6f6d022f6c2a1f53274a756c0db6d7d7_p', 'b4455439858ebd30588da0cb43fe9b80_p'],
+    ['49786e9dccad1b5e1a76dff4508c3166_p', '96273221e25bde2eb704da1a5541dddf_r'],
+    ['49786e9dccad1b5e1a76dff4508c3166_p', '18d0dc3a82f798d19c9d4ede8253ef9d_r'],
+    ['6f6d022f6c2a1f53274a756c0db6d7d7_p', '96273221e25bde2eb704da1a5541dddf_r'],
+    ['6f6d022f6c2a1f53274a756c0db6d7d7_p', '554d9c9bc3a4924b90d7b66f71b8b177_r'],
+    ['6f6d022f6c2a1f53274a756c0db6d7d7_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['6f6d022f6c2a1f53274a756c0db6d7d7_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['6f6d022f6c2a1f53274a756c0db6d7d7_p', '18d0dc3a82f798d19c9d4ede8253ef9d_r'],
+    ['b4455439858ebd30588da0cb43fe9b80_p', '18d0dc3a82f798d19c9d4ede8253ef9d_r'],
+    ['b4455439858ebd30588da0cb43fe9b80_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['b4455439858ebd30588da0cb43fe9b80_p', '0247805523ffe1caa6994fac064f6a34_r']
+  ],
+  'd104ad307af87a256e7303b8a7e786d5_r': [
+    ['8a739c3989f0aec5601eed64f2afe068_p', '7802463c9c580cdf31bdb3b3d885cdb9_r'],
+    ['8a739c3989f0aec5601eed64f2afe068_p', '6b7ea5b50d33352a04b7eab37f43b6b8_r'],
+    ['8a739c3989f0aec5601eed64f2afe068_p', '7f93e6c16e70fa303f21badc12a686a3_r']
+  ],
+  '9b05b095e0eda1d9d84a0405b334226d_r': [
+    ['11ed042f789f039d3578365ae2c97da1_p', '2df9ace242625cbdae561521d657c151_p'],
+    ['11ed042f789f039d3578365ae2c97da1_p', '2271d7380ae256d854e0a776023240db_p'],
+    ['2df9ace242625cbdae561521d657c151_p', '2271d7380ae256d854e0a776023240db_p'],
+    ['11ed042f789f039d3578365ae2c97da1_p', '6b7ea5b50d33352a04b7eab37f43b6b8_r'],
+    ['11ed042f789f039d3578365ae2c97da1_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['2df9ace242625cbdae561521d657c151_p', '96273221e25bde2eb704da1a5541dddf_r'],
+    ['2271d7380ae256d854e0a776023240db_p', '96273221e25bde2eb704da1a5541dddf_r'],
+    ['2271d7380ae256d854e0a776023240db_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['2271d7380ae256d854e0a776023240db_p', '554d9c9bc3a4924b90d7b66f71b8b177_r']
+  ],
+  '6b7ea5b50d33352a04b7eab37f43b6b8_r': [
+    ['575159712bf8d133d6badecc4b7dbfc4_p', 'd104ad307af87a256e7303b8a7e786d5_r'],
+    ['575159712bf8d133d6badecc4b7dbfc4_p', '9b05b095e0eda1d9d84a0405b334226d_r'],
+    ['575159712bf8d133d6badecc4b7dbfc4_p', '7f93e6c16e70fa303f21badc12a686a3_r']
+  ],
+  '7f93e6c16e70fa303f21badc12a686a3_r': [
+    ['ad1418343dec8236377353ecf7e6621e_p', 'fd792379fd986e4322ecf5ab13d6f783_p'],
+    ['ad1418343dec8236377353ecf7e6621e_p', 'dcb9cf5ef3f9e75df79fbed4e8806e03_p'],
+    ['ad1418343dec8236377353ecf7e6621e_p', '669067387ff48731ed672c279263b312_p'],
+    ['fd792379fd986e4322ecf5ab13d6f783_p', '9cbfaddc9bfb5efe83839ce449ce76c5_p'],
+    ['fd792379fd986e4322ecf5ab13d6f783_p', '669067387ff48731ed672c279263b312_p'],
+    ['9cbfaddc9bfb5efe83839ce449ce76c5_p', '669067387ff48731ed672c279263b312_p'],
+    ['9cbfaddc9bfb5efe83839ce449ce76c5_p', '219a3d8fed290a273da12ec738d05d4d_p'],
+    ['9cbfaddc9bfb5efe83839ce449ce76c5_p', '045c08779250a36bf855a11d0dceac60_p'],
+    ['dcb9cf5ef3f9e75df79fbed4e8806e03_p', '669067387ff48731ed672c279263b312_p'],
+    ['dcb9cf5ef3f9e75df79fbed4e8806e03_p', 'b82b3600a0ab24a33b270aa44a97a83e_p'],
+    ['669067387ff48731ed672c279263b312_p', '219a3d8fed290a273da12ec738d05d4d_p'],
+    ['669067387ff48731ed672c279263b312_p', 'b82b3600a0ab24a33b270aa44a97a83e_p'],
+    ['669067387ff48731ed672c279263b312_p', '27cb40e4e292d6ee2c07fd6f302f0aa4_p'],
+    ['219a3d8fed290a273da12ec738d05d4d_p', '045c08779250a36bf855a11d0dceac60_p'],
+    ['b82b3600a0ab24a33b270aa44a97a83e_p', '27cb40e4e292d6ee2c07fd6f302f0aa4_p'],
+    ['ad1418343dec8236377353ecf7e6621e_p', '7802463c9c580cdf31bdb3b3d885cdb9_r'],
+    ['ad1418343dec8236377353ecf7e6621e_p', 'd104ad307af87a256e7303b8a7e786d5_r'],
+    ['ad1418343dec8236377353ecf7e6621e_p', '6b7ea5b50d33352a04b7eab37f43b6b8_r'],
+    ['fd792379fd986e4322ecf5ab13d6f783_p', '6b7ea5b50d33352a04b7eab37f43b6b8_r'],
+    ['9cbfaddc9bfb5efe83839ce449ce76c5_p', '6b7ea5b50d33352a04b7eab37f43b6b8_r'],
+    ['9cbfaddc9bfb5efe83839ce449ce76c5_p', '9b05b095e0eda1d9d84a0405b334226d_r'],
+    ['9cbfaddc9bfb5efe83839ce449ce76c5_p', '554d9c9bc3a4924b90d7b66f71b8b177_r'],
+    ['dcb9cf5ef3f9e75df79fbed4e8806e03_p', '7802463c9c580cdf31bdb3b3d885cdb9_r'],
+    ['219a3d8fed290a273da12ec738d05d4d_p', 'fabbd91210b9f49102b12b4446fd1858_r'],
+    ['219a3d8fed290a273da12ec738d05d4d_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['045c08779250a36bf855a11d0dceac60_p', '554d9c9bc3a4924b90d7b66f71b8b177_r'],
+    ['045c08779250a36bf855a11d0dceac60_p', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+    ['045c08779250a36bf855a11d0dceac60_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['b82b3600a0ab24a33b270aa44a97a83e_p', '439a25f17d3ab976423ea90669684104_r'],
+    ['27cb40e4e292d6ee2c07fd6f302f0aa4_p', 'fabbd91210b9f49102b12b4446fd1858_r'],
+    ['27cb40e4e292d6ee2c07fd6f302f0aa4_p', '439a25f17d3ab976423ea90669684104_r'],
+    ['27cb40e4e292d6ee2c07fd6f302f0aa4_p', 'd1d230610229af5e415c4ac97754cf19_r']
+  ],
+  'd1d230610229af5e415c4ac97754cf19_r': [
+    ['93f477335c956c694c6770f8830f8be2_p', 'bcf5e62ea62812b9854b8d677d03a101_p'],
+    ['df2b829040ff33eeaa3c9199c893b98e_p', 'bcf5e62ea62812b9854b8d677d03a101_p'],
+    ['df2b829040ff33eeaa3c9199c893b98e_p', '333a9c1d0d3aa77690e54501f101813d_p'],
+    ['bcf5e62ea62812b9854b8d677d03a101_p', '333a9c1d0d3aa77690e54501f101813d_p'],
+    ['bcf5e62ea62812b9854b8d677d03a101_p', 'cb7a490cc9578d1fa5f878f011a19a51_p'],
+    ['333a9c1d0d3aa77690e54501f101813d_p', 'cb7a490cc9578d1fa5f878f011a19a51_p'],
+    ['93f477335c956c694c6770f8830f8be2_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['93f477335c956c694c6770f8830f8be2_p', 'fabbd91210b9f49102b12b4446fd1858_r'],
+    ['93f477335c956c694c6770f8830f8be2_p', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+    ['df2b829040ff33eeaa3c9199c893b98e_p', 'fabbd91210b9f49102b12b4446fd1858_r'],
+    ['df2b829040ff33eeaa3c9199c893b98e_p', '439a25f17d3ab976423ea90669684104_r'],
+    ['bcf5e62ea62812b9854b8d677d03a101_p', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+    ['bcf5e62ea62812b9854b8d677d03a101_p', '0247805523ffe1caa6994fac064f6a34_r'],
+    ['333a9c1d0d3aa77690e54501f101813d_p', '439a25f17d3ab976423ea90669684104_r'],
+    ['333a9c1d0d3aa77690e54501f101813d_p', 'c252714bb6bce3536805d06af8c7173d_r'],
+    ['cb7a490cc9578d1fa5f878f011a19a51_p', '0247805523ffe1caa6994fac064f6a34_r'],
+    ['cb7a490cc9578d1fa5f878f011a19a51_p', 'c252714bb6bce3536805d06af8c7173d_r'],
+    ['cb7a490cc9578d1fa5f878f011a19a51_p', '000e077d1a29a24f36a8b705dc821ee1_r']
+  ],
+  '18d0dc3a82f798d19c9d4ede8253ef9d_r': [
+    ['bbc19a07a765996c66b6b80cccd84074_p', '61007e8d55d16366af9e8807b9e520d1_p'],
+    ['bbc19a07a765996c66b6b80cccd84074_p', 'ab164f493fc47d40596aa5193c2f5534_p'],
+    ['bbc19a07a765996c66b6b80cccd84074_p', '7d3a2aa844806c54f07742ee05834106_p'],
+    ['61007e8d55d16366af9e8807b9e520d1_p', '7d3a2aa844806c54f07742ee05834106_p'],
+    ['ab164f493fc47d40596aa5193c2f5534_p', '7d3a2aa844806c54f07742ee05834106_p'],
+    ['bbc19a07a765996c66b6b80cccd84074_p', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+    ['ab164f493fc47d40596aa5193c2f5534_p', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+    ['ab164f493fc47d40596aa5193c2f5534_p', '0247805523ffe1caa6994fac064f6a34_r']
+  ],
+  '439a25f17d3ab976423ea90669684104_r': [
+    ['7ca67b999c317da24710b6020b7cad4e_p', '54c7e0f5bd8e341f6f0766abbf8275f6_p'],
+    ['7ca67b999c317da24710b6020b7cad4e_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['7ca67b999c317da24710b6020b7cad4e_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['54c7e0f5bd8e341f6f0766abbf8275f6_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['54c7e0f5bd8e341f6f0766abbf8275f6_p', 'c252714bb6bce3536805d06af8c7173d_r']
+  ],
+  '7802463c9c580cdf31bdb3b3d885cdb9_r': [
+    ['cce0b28c11f99bf22405764d503c7f80_p', '6e82355ca496d65a41b3fc8c4fb97b7e_p'],
+    ['cce0b28c11f99bf22405764d503c7f80_p', 'ed0be09b4d0881151fab608b0ec68c1d_p'],
+    ['6e82355ca496d65a41b3fc8c4fb97b7e_p', 'ed0be09b4d0881151fab608b0ec68c1d_p'],
+    ['6e82355ca496d65a41b3fc8c4fb97b7e_p', '3f4102eee6e969e0dd5ecc989c79ac4d_p'],
+    ['ed0be09b4d0881151fab608b0ec68c1d_p', '3f4102eee6e969e0dd5ecc989c79ac4d_p'],
+    ['6e82355ca496d65a41b3fc8c4fb97b7e_p', 'd104ad307af87a256e7303b8a7e786d5_r'],
+    ['6e82355ca496d65a41b3fc8c4fb97b7e_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['3f4102eee6e969e0dd5ecc989c79ac4d_p', '7f93e6c16e70fa303f21badc12a686a3_r']
+  ],
+  '554d9c9bc3a4924b90d7b66f71b8b177_r': [
+    ['924782a638b7b3dc5c6f128b225a3bd2_p', '9b05b095e0eda1d9d84a0405b334226d_r'],
+    ['924782a638b7b3dc5c6f128b225a3bd2_p', '96273221e25bde2eb704da1a5541dddf_r'],
+    ['924782a638b7b3dc5c6f128b225a3bd2_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['924782a638b7b3dc5c6f128b225a3bd2_p', '82139a2b169d3732fc9f2dc417f7c2d6_r']
+  ],
+  'fabbd91210b9f49102b12b4446fd1858_r': [
+    ['bc12ea08787501ca4f02ba6d3ac683c7_p', '7f93e6c16e70fa303f21badc12a686a3_r'],
+    ['bc12ea08787501ca4f02ba6d3ac683c7_p', 'd1d230610229af5e415c4ac97754cf19_r']
+  ],
+  '000e077d1a29a24f36a8b705dc821ee1_r': [
+    ['e09fb018d905724ee425526b2bb0b1be_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['e09fb018d905724ee425526b2bb0b1be_p', '0247805523ffe1caa6994fac064f6a34_r'],
+    ['e09fb018d905724ee425526b2bb0b1be_p', 'c252714bb6bce3536805d06af8c7173d_r']
+  ],
+  '96273221e25bde2eb704da1a5541dddf_r': [
+    ['30bcea2d8404926fb48500fa77528bdf_p', '9b05b095e0eda1d9d84a0405b334226d_r'],
+    ['30bcea2d8404926fb48500fa77528bdf_p', '554d9c9bc3a4924b90d7b66f71b8b177_r'],
+    ['30bcea2d8404926fb48500fa77528bdf_p', '82139a2b169d3732fc9f2dc417f7c2d6_r']
+  ],
+  '0247805523ffe1caa6994fac064f6a34_r': [
+    ['62cba08733a42bfb31a600fac8c6886f_p', '8480322f38d10513a3a5bb43f9733f1f_p'],
+    ['8480322f38d10513a3a5bb43f9733f1f_p', 'f515adc321b21b60757227a70e7a65c1_p'],
+    ['62cba08733a42bfb31a600fac8c6886f_p', '18d0dc3a82f798d19c9d4ede8253ef9d_r'],
+    ['62cba08733a42bfb31a600fac8c6886f_p', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+    ['8480322f38d10513a3a5bb43f9733f1f_p', '82139a2b169d3732fc9f2dc417f7c2d6_r'],
+    ['8480322f38d10513a3a5bb43f9733f1f_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['f515adc321b21b60757227a70e7a65c1_p', 'd1d230610229af5e415c4ac97754cf19_r'],
+    ['f515adc321b21b60757227a70e7a65c1_p', '000e077d1a29a24f36a8b705dc821ee1_r']
   ]
 }
 
 const points: Record<Regions | Provinces, Point> = Object.fromEntries(
   Array.from({ length: regions.length }, (_, i) => ([
     regions[i], {
-      x: random(0, SIZE), y: random(0, SIZE), vx: 0, vy: 0
+      x: randomInt(0, SIZE), y: randomInt(0, SIZE), vx: 0, vy: 0
     }
   ]))
 ) as Record<Regions | Provinces, Point>
 
-let edges: [Regions | Provinces, Regions | Provinces][] = JSON.parse(JSON.stringify(largeEdges));
+let edges: [Regions | Provinces, Regions | Provinces][] = JSON.parse(JSON.stringify(largeEdges))
 
 function animate(ctx: CanvasRenderingContext2D) {
   ctx.clearRect(0, 0, SIZE, SIZE)
-
-  // draw points
-  Object.entries(points).forEach(([k, p]) => {
-    ctx.fillStyle = isRegion(k) ? "rgb(255 0 0)" : "rgb(0 255 0)";
-    ctx.beginPath()
-    ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI, false)
-    ctx.fill()
-  })
+  ctx.font = "10px sans-serif"
 
   // draw edges
   ctx.strokeStyle = "rgb(255 0 0)"
   ctx.lineWidth = 2
   edges.forEach(([a, b]) => {
-    if (!points[b]) {
-      console.log(a, b)
-    }
     ctx.beginPath()
     ctx.moveTo(points[a].x, points[a].y)
     ctx.lineTo(points[b].x, points[b].y)
     ctx.stroke()
   })
 
+  // draw points
+  Object.entries(points).forEach(([k, p]) => {
+    ctx.fillStyle = isAnswer(k) ? "rgb(148 180 250)" : "rgb(255 0 0)"
+    ctx.beginPath()
+    ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI, false)
+    ctx.fill()
+    ctx.fillText(k, p.x + 5, p.y + 5)
+  })
+
   physic()
 }
 
-let prevRegion: Regions | undefined;
+let prevRegion: Regions | undefined
 function onClick(x: number, y: number) {
   let target: [number, Regions, Point] | undefined
   Object.entries(points).forEach(([label, point]) => {
@@ -233,44 +332,36 @@ function onClick(x: number, y: number) {
   for (const key in points) {
     if (isProvince(key)) {
       kinematics.push(points[key])
-      console.log("removed point", key)
       delete points[key]
     }
   }
 
   // remove previous province edge
   edges = edges.filter(([p1, p2]) => {
-    if (!(isRegion(p1) && isRegion(p2)))
-      console.log("removed edges", [p1, p2])
     return isRegion(p1) && isRegion(p2)
   })
 
   // add previous region point
   if (prevRegion) {
-    const l = kinematics.length;
+    const l = kinematics.length
     points[prevRegion] = {
       x: kinematics.reduce((acc, {x}) => acc + x, 0) / l, 
       y: kinematics.reduce((acc, {y}) => acc + y, 0) / l, 
       vx: kinematics.reduce((acc, {vx}) => acc + vx, 0) / l, 
       vy: kinematics.reduce((acc, {vy}) => acc + vy, 0) / l
     }
-    console.log("add point", prevRegion)
   }
 
   // add previous region edge
   if (prevRegion) {
     edges.push(...largeEdges.filter(e => e.includes(prevRegion!)))
-    console.log("add edges", largeEdges.filter(e => e.includes(prevRegion!)))
   }
 
   // remove new region point
   delete points[region]
-  console.log("remove point", region)
 
   // remove new region edge
   edges = edges.filter(([p1, p2]) => {
-    if (!(isRegion(p1) && isRegion(p2)))
-      console.log("removed edges", [p1, p2])
     return p1 !== region && p2 !== region
   })
 
@@ -278,27 +369,24 @@ function onClick(x: number, y: number) {
   const related = smallEgdes[region]
   const newPoints: Set<Regions | Provinces> = new Set()
   related.forEach((edge) => {
-    newPoints.add(edge[0])
-    newPoints.add(edge[1])
-    console.log("add edge", edge)
+    if (isProvince(edge[0])) newPoints.add(edge[0])
+    if (isProvince(edge[1])) newPoints.add(edge[1])
     edges.push(edge)
   })
 
   // add new province point
   newPoints.forEach(p => {
-    console.log("add point", p)
     points[p] = {
-      x: point.x + Math.random(), y: point.y + Math.random(), 
-      vx: point.vx + Math.random(), vy: point.vy + Math.random()
+      x: point.x + randomNoise(SPRING_LEN), y: point.y + randomNoise(SPRING_LEN), 
+      vx: point.vx, vy: point.vy
     }
   })
 
   prevRegion = region
-  console.log("=====")
 }
 
 function physic() {
-  const entries = Object.entries(points);
+  const entries = Object.entries(points)
 
   // move
   entries.forEach(([_, p]) => {
@@ -314,23 +402,65 @@ function physic() {
     }
   })
 
-  // electronic force
-  entries.forEach(([k1, p1]) => {
-    entries.forEach(([k2, p2]) => {
-      if (k1 === k2) return
+  // gravity
+  // entries.forEach(([k1, p1]) => {
+  //   entries.forEach(([k2, p2]) => {
+  //     if (k1 === k2) return
 
-      let dx = p2.x - p1.x
-      let dy = p2.y - p1.y
-      const len = Math.sqrt(dx*dx + dy*dy)
-      if (len > 0) {
-        const factor = 0.1 / (len * len)
-        dx *= factor
-        dy *= factor
-        p1.vx += dx
-        p1.vy += dy
-        p2.vx -= dx
-        p2.vy -= dy
-      }
+  //     let dx = p2.x - p1.x
+  //     let dy = p2.y - p1.y
+  //     const len = Math.sqrt(dx*dx + dy*dy)
+  //     if (len > 0) {
+  //       const factor = 1 / (len * len)
+  //       dx *= factor
+  //       dy *= factor
+  //       p1.vx += dx
+  //       p1.vy += dy
+  //       p2.vx -= dx
+  //       p2.vy -= dy
+  //     }
+  //   })
+  // })
+
+  // spring
+  edges.forEach(([n1, n2]) => {
+    let dx = points[n2].x - points[n1].x
+    let dy = points[n2].y - points[n1].y
+    const delta = Math.sqrt(dx*dx + dy*dy) - SPRING_LEN
+    if (delta != 0) {
+      dx *= 0.0000001 * delta
+      dy *= 0.0000001 * delta
+      points[n1].vx += dx
+      points[n1].vy += dy
+      points[n2].vx -= dx
+      points[n2].vy -= dy
+    }
+  })
+
+  // electronic force
+  entries.forEach(([k, v]) => {
+    const neighbor: (Regions | Provinces)[] = []
+    edges.forEach(([a, b]) => {
+      if (a == k) neighbor.push(b)
+      if (b == k) neighbor.push(a)
+    })
+
+    neighbor.forEach(n1 => {
+      neighbor.forEach(n2 => {
+        if (n1 != n2) {
+          let dx = points[n2].x - points[n1].x
+          let dy = points[n2].y - points[n1].y
+          const len = Math.max(Math.sqrt(dx*dx + dy*dy), 1)
+          if (len > 0) {
+            dx *= 10 / (len ** 3)
+            dy *= 10 / (len ** 3)
+            points[n1].vx -= dx
+            points[n1].vy -= dy
+            points[n2].vx += dx
+            points[n2].vy += dy
+          }
+        } 
+      })
     })
   })
 
@@ -340,14 +470,22 @@ function physic() {
   // })
 }
 
-function random(a: number, b: number) {
+function randomInt(a: number, b: number) {
   return Math.random() * (b - a) + a
 }
 
+function randomNoise(delta: number) {
+  return Math.random() * 2 * delta - delta
+}
+
 function isRegion(str: string): str is Regions {
-  return str.endsWith("_r");
+  return str.endsWith("_r")
 }
 
 function isProvince(str: string): str is Provinces {
-  return str.endsWith("_p");
+  return str.endsWith("_p")
+}
+
+function isAnswer(str: string): str is Regions | Provinces {
+  return isProvince(str) && answers.includes(str);
 }
