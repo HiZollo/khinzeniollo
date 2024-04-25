@@ -1,15 +1,65 @@
 "use client"
 
+import TextInput from "@/components/TextInput"
+import Button from "@/components/button";
 import GeneralCanvas from "@/components/generalCanvas"
+import { ChangeEvent, useReducer } from "react"
+
+type Event = ChangeEvent<HTMLInputElement>;
+
+const names = ["Primera", "Segunta", "Tercera", "Cuarta", "Quinta", "Sexta", "Séptima", "Octava"];
+
+function reducer(state: string[], action: { index: number, value: string }): string[] {
+  state[action.index] = action.value;
+  return [...state];
+}
 
 export default function Cuatro() {
+  const [values, dispatch] = useReducer(reducer, Array<string>(8).fill(""));
+
+  function handleChange(event: Event, index: number) {
+    dispatch({ index, value: event.target.value });
+  }
+
+  function submit() {
+    fetch('/api/levels/4/check', {
+      method: 'POST',
+      body: JSON.stringify(values)
+    }).then(res => res.json()).then(data => {
+      alert(data.code)
+    })
+  }
+
   return (
-    <GeneralCanvas
-      animate={animate}
-      onClick={onClick}
-      width={SIZE}
-      height={SIZE}
-    ></GeneralCanvas>
+    <>
+      <h1>¿Dónde están?</h1>
+      <p>En la leyenda española, un artefacto divino se fragmentó en ocho piezas y se dispersó por toda España.</p>
+      <p>Adquiriste una antigua máquina que revela las provincias donde se encuentran estas piezas.</p>
+      <p>Haz clic en los puntos para descubrir las provincias. Buena suerte.</p>
+
+      <GeneralCanvas
+        animate={animate}
+        onClick={onClick}
+        width={SIZE}
+        height={SIZE}
+      ></GeneralCanvas>
+
+      <div style={{ margin: "30px", gap: "20px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <>
+          {names.map((name, i) => {
+            return (
+              <TextInput
+                key={i}
+                placeholder={`${name} Provincia`}
+                onChange={(e: Event) => handleChange(e, i)}
+                value={values[i]}
+              />
+            )
+          })}
+          <Button onClick={submit}>Enviar</Button>
+        </>
+      </div>
+    </>
   )
 }
 
@@ -288,7 +338,7 @@ let edges: [Regions | Provinces, Regions | Provinces][] = JSON.parse(JSON.string
 
 function animate(ctx: CanvasRenderingContext2D) {
   ctx.clearRect(0, 0, SIZE, SIZE)
-  ctx.font = "10px sans-serif"
+  ctx.font = "12px sans-serif"
 
   // draw edges
   ctx.strokeStyle = "rgb(255 0 0)"
@@ -306,8 +356,19 @@ function animate(ctx: CanvasRenderingContext2D) {
     ctx.beginPath()
     ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI, false)
     ctx.fill()
-    ctx.fillText(k, p.x + 5, p.y + 5)
+    ctx.fillText(randomText(), p.x + 6, p.y + 6)
   })
+
+  ctx.strokeStyle = "rgb(148 180 250)"
+  ctx.lineWidth = 3
+
+  ctx.beginPath()
+  ctx.moveTo(0, 0)
+  ctx.lineTo(0, SIZE)
+  ctx.lineTo(SIZE, SIZE)
+  ctx.lineTo(SIZE, 0)
+  ctx.lineTo(0, 0)
+  ctx.stroke()
 
   physic()
 }
@@ -476,6 +537,10 @@ function randomInt(a: number, b: number) {
 
 function randomNoise(delta: number) {
   return Math.random() * 2 * delta - delta
+}
+
+function randomText() {
+  return (Math.random() * 1e15).toString(16);
 }
 
 function isRegion(str: string): str is Regions {
