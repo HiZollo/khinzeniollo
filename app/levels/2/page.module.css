@@ -4,3 +4,13 @@
   margin: 24px 0;
   justify-content: space-around;
 }
+
+.rosetta {
+  font-family: monospace;
+  font-size: 18px;
+  text-align: left;
+}
+
+.rosetta > p:nth-child(even) {
+  transform: rotateY(180deg)
+}
