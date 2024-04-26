@@ -8,6 +8,7 @@ import styles from './page.module.css'
 
 export default function Dos() {
   const [text, setText] = useState('')
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     fetch('/api/levels/2/getText')
@@ -15,14 +16,39 @@ export default function Dos() {
       .then(data => setText(data.text))
   }, [])
 
+  useEffect(() => {
+    if (!text) return
+    const lines = text.match(/.{1,50}/g)
+    if (!lines || !lines.length) return
+    
+    if (!canvasRef.current) return
+
+    canvasRef.current.height = lines.length * 35
+    const ctx = canvasRef.current.getContext('2d')!
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+
+    ctx.font = '20px monospace'
+    ctx.fillStyle = '#ffffff'
+
+    lines.forEach((line, i) => {
+      // Array.prototype.forEach.call(line, (text, j) => {
+        // const r = Math.random() * Math.PI / 360
+        // ctx.rotate(r)
+        // ctx.fillText(text, j*12, (i+1)*35)
+        // ctx.rotate(-r)
+      // })
+      ctx.fillText(line, 0, (i+1)*35)
+      ctx.translate(600, 0)
+      ctx.scale(-1,1)
+    })
+  }, [text])
+
   return (
     <>
       <h1>Rosetta</h1>
-      {text && <div className={styles.rosetta}>
-        {text.match(/.{1,50}/g)!.map((v,i) => {
-          return <p key={i}>{v}</p>
-        })}
-      </div>}
+      <canvas ref={canvasRef} width={600} height={0}></canvas>
     </>
   )
 }

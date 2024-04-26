@@ -4,8 +4,8 @@ const originalText = `Iam illa, perfugia quae sumunt sibi ad excusationem quo fa
 Illa autem exceptio cui probari tandem potest, quod negant sapientem suscepturum ullam rei publicae partem, extra quam si eum tempus et necessitas coegerit? quasi vero maior cuiquam necessitas accidere possit quam accidit nobis; in qua quid facere potuissem, nisi tum consul fuissem? consul autem esse qui potui, nisi eum vitae cursum tenuissem a pueritia, per quem equestri loco natus pervenirem ad honorem amplissimum? non igitur potestas est ex tempore aut cum velis opitulandi rei publicae, quamvis ea prematur periculis, nisi eo loco sis ut tibi id facere liceat.`
 
 const text = originalText
-  .replaceAll(/[ ,.:;'"]/g, '')
-  .replace('\n', ' ')
+  .replaceAll(/[ ,.:;"!?]/g, '')
+  .replaceAll('\n', ' ')
   .toUpperCase()
   .replaceAll('U', 'V')
 
