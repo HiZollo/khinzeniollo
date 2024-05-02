@@ -26,22 +26,23 @@ export default function Dos() {
     canvasRef.current.height = lines.length * 35
     const ctx = canvasRef.current.getContext('2d')!
 
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(1, 0, 0, 1, 300, 35);
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
 
     ctx.font = '20px monospace'
     ctx.fillStyle = '#ffffff'
 
     lines.forEach((line, i) => {
-      // Array.prototype.forEach.call(line, (text, j) => {
-        // const r = Math.random() * Math.PI / 360
-        // ctx.rotate(r)
-        // ctx.fillText(text, j*12, (i+1)*35)
-        // ctx.rotate(-r)
-      // })
-      ctx.fillText(line, 0, (i+1)*35)
-      ctx.translate(600, 0)
+      Array.prototype.forEach.call(line, (text, j) => {
+        const r = Math.random() * Math.PI / 360
+        ctx.rotate(r)
+        ctx.fillText(text, j*12 + 2*(2 * Math.random() - 1) - 300, 2*(2 * Math.random() - 1))
+        ctx.rotate(-r)
+      })
+
+      // ctx.fillText(line, 0, (i+1)*35)
       ctx.scale(-1,1)
+      ctx.translate(0, 35)
     })
   }, [text])
 
