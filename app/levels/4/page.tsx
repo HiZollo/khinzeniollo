@@ -7,7 +7,7 @@ import { ChangeEvent, useReducer } from "react"
 
 type Event = ChangeEvent<HTMLInputElement>;
 
-const names = ["Primera", "Segunta", "Tercera", "Cuarta", "Quinta", "Sexta", "Séptima", "Octava"];
+const names = ["Primer", "Segunta", "Tercer", "Cuarta", "Quinta", "Sexta", "Séptima", "Octava"];
 
 function reducer(state: string[], action: { index: number, value: string }): string[] {
   state[action.index] = action.value;
