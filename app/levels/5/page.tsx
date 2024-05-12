@@ -1,5 +1,4 @@
 import 'katex/dist/katex.min.css'
-import { useEffect, useRef, useState } from 'react'
 import Latex from 'react-latex-next'
 import Input from '@/components/TextInput'
 import { getServerSession } from 'next-auth/next'
