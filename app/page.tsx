@@ -14,7 +14,7 @@ const SpanishNumber = [
 
 const LevelName = [
   "Hola Mundo", "Rosetta", "", "¿Dónde están?", "¿Cuánto?",
-  "Qué es"
+  "¿Qué es?"
 ]
 
 const content = iota(6).map((_, i) => ({ title: SpanishNumber[i], description: LevelName[i] }))
