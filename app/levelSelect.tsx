@@ -22,12 +22,12 @@ export const StickyScroll = ({
   })
   const cardLength = content.length
   const cardsBreakpoints = [
-    0, 1/6, 2/6, 3/6, 4/6, 5/6
+    0, 1/7, 2/7, 3/7, 4/7, 5/7, 6/7
   ] 
  
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     cardsBreakpoints.forEach((breakpoint, index) => {
-      if (latest > breakpoint - 1/6 && latest <= breakpoint) {
+      if (latest > breakpoint - 1/7 && latest <= breakpoint) {
         setActiveCard(() => index)
       }
     })

@@ -9,15 +9,15 @@ import iota from '@/utils/iota'
 
 const SpanishNumber = [
   "Uno", "Dos", "Tres", "Cuatro", "Cinco", 
-  "Bonus I"
+  "Bonus I", "Bonus II"
 ]
 
 const LevelName = [
-  "Hola Mundo", "Rosetta", "", "¿Dónde están?", "¿Cuánto?",
-  "¿Qué es?"
+  "¿Qué cosa hay aquí?", "Rosetta", "", "¿Dónde están?", "¿Cuánto?",
+  "¿Cuál es?", "¿Quién es?"
 ]
 
-const content = iota(6).map((_, i) => ({ title: SpanishNumber[i], description: LevelName[i] }))
+const content = iota(7).map((_, i) => ({ title: SpanishNumber[i], description: LevelName[i] }))
 
 export default async function Home() {
   const session = await getServerSession(authOptions)
