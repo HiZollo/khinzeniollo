@@ -1,8 +1,30 @@
 'use client'
 import GeneralCanvas from '@/components/generalCanvas'
 import { useEffect } from 'react';
+import data from "./data.json";
 
 const SIZE = 600;
+
+interface Point {
+  id: string;
+  moved: boolean;
+  group: Group;
+  char: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  vx: number;
+  vy: number;
+}
+
+enum Stage {
+  Normal, Gocha, Dropping, Si, Otra
+}
+
+enum Group {
+  Trash, Answer, Exclamation, Period
+}
 
 export default function Uno() {
   useEffect(() => {
@@ -25,171 +47,28 @@ export default function Uno() {
   )
 }
 
-interface Point {
-  id: string;
-  m: number;
-  g: number;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  vx: number;
-  vy: number;
-  t: string;
-}
+data.points.forEach(expand);
+data.answers.forEach(expand);
+expand(data.si);
+expand(data.otra);
 
-enum Stage {
-  Normal, Gocha, Dropping, Si, Otra
-}
-
-const _points: Point[][] = [
-  [
-    { id: 'i', m: 0, g: 2, x: 0, y: 275, w: 14, h: 36, vx: 0, vy: 0, t: '¡' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 35, h: 36, vx: 0, vy: 0, t: 'H' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'o' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 12, h: 36, vx: 0, vy: 0, t: 'l' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 40, h: 36, vx: 0, vy: 0, t: 'M' }, 
-    { id: '7', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '8', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'n' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 26, h: 36, vx: 0, vy: 0, t: 'd' }, 
-    { id: '9', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'o' }, 
-    { id: 'e', m: 0, g: 2, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: '!' }, 
-  ], 
-  [
-    { id: '0', m: 0, g: 1, x: 0, y: 325, w: 34, h: 36, vx: 0, vy: 0, t: 'A' }, 
-    { id: '1', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'q' }, 
-    { id: '2', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '3', m: 0, g: 1, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: 'í' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'n' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'o' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '4', m: 0, g: 1, x: 0, y: 0, w: 27, h: 36, vx: 0, vy: 0, t: 'h' }, 
-    { id: '5', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: '6', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'y' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'n' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 26, h: 36, vx: 0, vy: 0, t: 'd' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: 'p', m: 0, g: 3, x: 0, y: 0, w: 14, h: 14, vx: 0, vy: 0, t: '.' }, 
-  ]
-]
-
-const answers: Point[][] = [
-  [
-    { id: '0', m: 0, g: 1, x: 0, y: 300, w: 34, h: 36, vx: 0, vy: 0, t: 'A' }, 
-    { id: '1', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'q' }, 
-    { id: '2', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '3', m: 0, g: 1, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: 'í' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '4', m: 0, g: 1, x: 0, y: 0, w: 27, h: 36, vx: 0, vy: 0, t: 'h' }, 
-    { id: '5', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: '6', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'y' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '7', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '8', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'n' }, 
-    { id: '9', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'o' }, 
-  ], [
-    { id: '0', m: 0, g: 1, x: 0, y: 300, w: 34, h: 36, vx: 0, vy: 0, t: 'A' }, 
-    { id: '1', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'q' }, 
-    { id: '2', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '3', m: 0, g: 1, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: 'í' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '4', m: 0, g: 1, x: 0, y: 0, w: 27, h: 36, vx: 0, vy: 0, t: 'h' }, 
-    { id: '5', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: '6', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'y' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '7', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '8', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'n' }, 
-    { id: '9', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'o' }, 
-    { id: 'p', m: 0, g: 3, x: 0, y: 0, w: 14, h: 14, vx: 0, vy: 0, t: '.' }, 
-  ], [
-    { id: '0', m: 0, g: 1, x: 0, y: 300, w: 34, h: 36, vx: 0, vy: 0, t: 'A' }, 
-    { id: '1', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'q' }, 
-    { id: '2', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '3', m: 0, g: 1, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: 'í' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '4', m: 0, g: 1, x: 0, y: 0, w: 27, h: 36, vx: 0, vy: 0, t: 'h' }, 
-    { id: '5', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: '6', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'y' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: 'i', m: 0, g: 2, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: '¡' }, 
-    { id: '7', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '8', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'n' }, 
-    { id: '9', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'o' }, 
-    { id: 'e', m: 0, g: 2, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: '!' }, 
-  ], [
-    { id: '0', m: 0, g: 1, x: 0, y: 300, w: 34, h: 36, vx: 0, vy: 0, t: 'A' }, 
-    { id: '1', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'q' }, 
-    { id: '2', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '3', m: 0, g: 1, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: 'í' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: '4', m: 0, g: 1, x: 0, y: 0, w: 27, h: 36, vx: 0, vy: 0, t: 'h' }, 
-    { id: '5', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'a' }, 
-    { id: '6', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'y' }, 
-    { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0, t: ' ' }, 
-    { id: 'i', m: 0, g: 2, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: '¡' }, 
-    { id: '7', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'u' }, 
-    { id: '8', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0, t: 'n' }, 
-    { id: '9', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0, t: 'o' }, 
-    { id: 'e', m: 0, g: 2, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0, t: '!' }, 
-    { id: 'p', m: 0, g: 3, x: 0, y: 0, w: 14, h: 14, vx: 0, vy: 0, t: '.' }, 
-  ]
-];
-
-const si: Point[] = [
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 32, h: 36, vx: 0, vy: 0.5, t: 'S' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0.5, t: 'í' }, 
-  { id: '', m: 0, g: 3, x: 0, y: 0, w: 14, h: 14, vx: 0, vy: 0.5, t: '.' }, 
-];
-
-const otra: Point[] = [
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 34, h: 36, vx: 0, vy: 0.5, t: 'A' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'q' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 27, h: 26, vx: 0, vy: 0.5, t: 'u' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 14, h: 36, vx: 0, vy: 0.5, t: 'í' }, 
-  { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0.5, t: ' ' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 27, h: 36, vx: 0, vy: 0.5, t: 'h' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'a' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'y' }, 
-  { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0.5, t: ' ' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'o' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 16, h: 26, vx: 0, vy: 0.5, t: 't' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 20, h: 26, vx: 0, vy: 0.5, t: 'r' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'a' }, 
-  { id: '', m: 0, g: 0, x: 0, y: 0, w: 18, h: 18, vx: 0, vy: 0.5, t: ' ' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'c' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'o' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 24, h: 26, vx: 0, vy: 0.5, t: 's' }, 
-  { id: '', m: 0, g: 1, x: 0, y: 0, w: 26, h: 26, vx: 0, vy: 0.5, t: 'a' }, 
-  { id: '', m: 0, g: 3, x: 0, y: 0, w: 14, h: 14, vx: 0, vy: 0.5, t: '.' }, 
-];
-
-_points.forEach(expand);
-answers.forEach(expand);
-expand(si);
-expand(otra);
-
-let points = deepCopy(_points).flat().filter(({ t, id }) => t !== ' ' && id)
+let points = structuredClone(data.points).flat().filter(({ char }) => char !== ' ')
 let stage = Stage.Normal;
 let ans: Point[] = [];
 
-const nOnes = points.filter(({ g }) => g === 1).length;
+const nAnswer = points.filter(({ group }) => group === Group.Answer).length;
 
 function animate(ctx: CanvasRenderingContext2D) {
   ctx.clearRect(0, 0, SIZE, SIZE)
 
-  points.forEach(({ x, y, w, h, t }) => {
+  points.forEach(({ x, y, w, h, char }) => {
     ctx.strokeStyle = "#ff0000"
     ctx.lineWidth = 2
     ctx.strokeRect(x - w/2, y - h/2, w, h)
   
     ctx.fillStyle = "#ffffff"
     ctx.font = "48px arial"
-    ctx.fillText(t, x - w/2, y + h/2)
+    ctx.fillText(char, x - w/2, y + h/2)
   })
 
   physics();
@@ -198,7 +77,7 @@ function animate(ctx: CanvasRenderingContext2D) {
     case Stage.Normal:
       const c = checkNormal();
       if (c >= 0) {
-        ans = answers[c];
+        ans = data.answers[c];
         stage = Stage.Gocha;
       }
       break;
@@ -214,21 +93,21 @@ function animate(ctx: CanvasRenderingContext2D) {
     case Stage.Dropping:
       if (points.length === 0) {
         stage = Stage.Si;
-        points = si.filter(({ t }) => t !== ' ');
+        points = data.si.filter(({ char }) => char !== ' ');
       }
       break;
 
     case Stage.Si:
       if (points.length === 0) {
         stage = Stage.Otra;
-        points = otra.filter(({ t }) => t !== ' ');
+        points = data.otra.filter(({ char }) => char !== ' ');
       }
       break;
 
     case Stage.Otra:
       if (points.length === 0) {
         stage = Stage.Otra;
-        points = otra;
+        points = data.otra;
       }
       break;
   }
@@ -241,7 +120,7 @@ function onHover(x: number, y: number) {
     const dx = px - x;
     const dy = py - y;
     if (Math.abs(dx) < pw/2 && Math.abs(dy) < ph/2) {
-      point.m = 1;
+      point.moved = false;
       if (pw/2 - Math.abs(dx) < ph/2 - Math.abs(dy)) {
         point.vx += 0.1 * Math.min(pw/2 / dx, 10);
       }
@@ -301,14 +180,14 @@ function moveToAnswer() {
 }
 
 function checkNormal() {
-  if (points.filter(({ g }) => g === 0).length !== 0) return -1;
-  if (points.filter(({ m, g }) => g === 1 && !m).length !== nOnes) return -1;
+  if (points.some(({ group }) => group === Group.Trash)) return -1;
+  if (points.filter(({ moved, group }) => group === Group.Answer && !moved).length !== nAnswer) return -1;
 
-  const escLen = points.filter(({ m, g }) => g === 2 && !m).length;
-  if (escLen === 1) return 0;
+  const excLen = points.filter(({ group }) => group === Group.Exclamation).length;
+  if (excLen === 1) return 0;
 
-  const punLen = points.filter(({ g }) => g === 3).length;
-  return escLen + punLen;
+  const punLen = points.filter(({ group }) => group === Group.Period).length;
+  return excLen + punLen;
 }
 
 function checkGocha() {
@@ -317,8 +196,4 @@ function checkGocha() {
     if (!target) return false;
     return Math.abs(point.x - target.x) < 0.5 && Math.abs(point.y - target.y) < 0.5;
   })
-}
-
-function deepCopy<T>(data: T): T {
-  return JSON.parse(JSON.stringify(data));
 }
