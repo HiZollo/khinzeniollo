@@ -6,11 +6,13 @@ interface GeneralCanvasProps {
   animate: (ctx: CanvasRenderingContext2D) => void
   onClick?: (x: number, y: number) => void
   onHover?: (x: number, y: number) => void
+  onKeyDown?: (key: string) => void
+  onKeyUp?: (key: string) => void
   width: number
   height: number
 }
 
-export default function GeneralCanvas({ animate, onClick, onHover, width, height }: GeneralCanvasProps) {
+export default function GeneralCanvas({ animate, onClick, onKeyDown, onKeyUp, onHover, width, height }: GeneralCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<Canvas | null>(null);
 
@@ -22,11 +24,18 @@ export default function GeneralCanvas({ animate, onClick, onHover, width, height
         animate(cvs.ctx)
       })
 
+      document.addEventListener("keydown", e => {
+        onKeyDown?.(e.key);
+      })
+      document.addEventListener("keyup", e => {
+        onKeyUp?.(e.key);
+      })
+
       return () => {
         cvs.destroy()
       }
     }
-  }, [])
+  }, [animate, onHover])
 
   function handleClick(event: React.MouseEvent<HTMLCanvasElement>) {
     if (canvasRef.current) {
