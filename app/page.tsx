@@ -9,7 +9,7 @@ import iota from '@/utils/iota'
 
 const SpanishNumber = [
   "Uno", "Dos", "Tres", "Cuatro", "Cinco", 
-  "Bonus I", "Bonus II"
+  "Extra I", "Extra II"
 ]
 
 const LevelName = [
