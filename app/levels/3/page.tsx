@@ -1,27 +1,91 @@
 'use client'
 import GeneralCanvas from '@/components/generalCanvas'
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import * as Tone from 'tone';
+import { Piano } from '@tonejs/piano';
 
 const SIZE = 600;
 const RADIUS = 10;
-const VELOCITY = 10;
+const VELOCITY = 5;
 const DELTA = RADIUS - VELOCITY;
 
+const score = [
+                                                  ['G4'], ['G4'], 
+  ['C5'], ['C5'], ['C5'], ['E5'], ['G5'], ['G5'], ['G5'], ['C5'], 
+  ['B4'], ['B4'], ['B4'], ['E5'], ['G5'], ['G5'], ['G5'], ['G5'], 
+  ['A5'], ['A5'], ['A5'], ['B5'], ['C6'], ['C6'], ['A5'], ['A5'], 
+  ['G5'], ['G5'], ['G5'], ['G5'], ['G5'], ['G5'], ['E5'], ['D5'], 
+  ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['E5'], ['D5'], 
+  ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['D5'], ['E5'], 
+  ['D5'], ['D5'], ['D5'], ['A4'], ['B4'], ['B4'], ['C5'], ['D5'], 
+  ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], 
+]
+let scoreIndex = score.length - 1;
+// let scoreIndex = 0;
+
 export default function Tres() {
+  const [loading, setLoading] = useState(true);
+  const [started, setStarted] = useState(false);
+  const pianoRef = useRef<Piano>();
 
   useEffect(() => {
-  });
+    const piano = new Piano({
+      velocities: 5,
+    });
+
+    piano.toDestination();
+    piano.load().then(() => {
+      pianoRef.current = piano;
+      setLoading(false);
+    });
+
+    return () => {
+      if (pianoRef.current) {
+        pianoRef.current.dispose();
+      }
+    };
+  }, []);
+
+  async function playNote() {
+    if (!pianoRef.current) return;
+
+    if (Tone.getContext().state !== 'running') {
+      await Tone.start();
+    }
+
+    const notes = score[scoreIndex];
+    scoreIndex = scoreIndex === 0 ? score.length - 1 : scoreIndex - 1;
+    // scoreIndex = scoreIndex === score.length - 1 ? 0 : scoreIndex + 1;
+
+    for (const note of notes) {
+      pianoRef.current.keyDown({ note, time: Tone.now(), velocity: 0.1 });
+      pianoRef.current.keyUp({ note, time: Tone.now() + 1.5 });
+    }
+  }
+
+  function onclick() {
+    setStarted(true)
+  }
+
+  if (loading) {
+    return (
+      <>
+        <h1>¿Qué cosa hay aquí?</h1>
+        <p>Cargando...</p>
+      </>
+    )
+  }
 
   return (
     <>
       <h1>¿Qué cosa hay aquí?</h1>
       <GeneralCanvas
-        animate={animate}
+        animate={(ctx) => animate(ctx, playNote, started)}
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
+        onClick={onclick}
         width={SIZE}
         height={SIZE}
-
       ></GeneralCanvas>
     </>
   )
@@ -47,58 +111,50 @@ const targets = [
 
 let target = structuredClone(targets[0]);
 let lastTarget = 0;
-let shifting = false;
+let mode: WallMode = WallMode.Through;
+let blockKey: boolean = false;
+let mirrorKey: boolean = false;
 
-function onKeyDown(key: string) {
-  switch (key) {
-    case 'w': case 'W':
-      walls.up.mode = shifting ? WallMode.Mirror : WallMode.Block;
+function onKeyDown(code: string) {
+  switch (code) {
+    case 'KeyZ':
+      mode = WallMode.Block;
+      blockKey = true;
       break;
-    case 'a': case 'A':
-      walls.left.mode = shifting ? WallMode.Mirror : WallMode.Block;
-      break;
-    case 's': case 'S':
-      walls.down.mode = shifting ? WallMode.Mirror : WallMode.Block;
-      break;
-    case 'd': case 'D':
-      walls.right.mode = shifting ? WallMode.Mirror : WallMode.Block;
-      break;
-    case 'Shift':
-      shifting = true;
-      if (walls.up.mode === WallMode.Block) walls.up.mode = WallMode.Mirror;
-      if (walls.left.mode === WallMode.Block) walls.left.mode = WallMode.Mirror;
-      if (walls.down.mode === WallMode.Block) walls.down.mode = WallMode.Mirror;
-      if (walls.right.mode === WallMode.Block) walls.right.mode = WallMode.Mirror;
+    case 'KeyX':
+      mode = WallMode.Mirror;
+      mirrorKey = true;
       break;
   }
+  walls.up.mode = walls.left.mode = walls.down.mode = walls.right.mode = mode;
 }
 
-function onKeyUp(key: string) {
-  switch (key) {
-    case 'w': case "W":
-      walls.up.mode = WallMode.Through;
+function onKeyUp(code: string) {
+  switch (code) {
+    case 'KeyZ':
+      mode = mirrorKey ? WallMode.Mirror : WallMode.Through;
+      blockKey = false;
       break;
-    case 'a': case "A":
-      walls.left.mode = WallMode.Through;
-      break;
-    case 's': case "S":
-      walls.down.mode = WallMode.Through;
-      break;
-    case 'd': case "D":
-      walls.right.mode = WallMode.Through;
-      break;
-    case 'Shift':
-      shifting = false;
-      if (walls.up.mode === WallMode.Mirror) walls.up.mode = WallMode.Block;
-      if (walls.left.mode === WallMode.Mirror) walls.left.mode = WallMode.Block;
-      if (walls.down.mode === WallMode.Mirror) walls.down.mode = WallMode.Block;
-      if (walls.right.mode === WallMode.Mirror) walls.right.mode = WallMode.Block;
+    case 'KeyX':
+      mode = blockKey ? WallMode.Block : WallMode.Through;
+      mirrorKey = false;
       break;
   }
+  walls.up.mode = walls.left.mode = walls.down.mode = walls.right.mode = mode;
 }
 
-function animate(ctx: CanvasRenderingContext2D) {
+function animate(ctx: CanvasRenderingContext2D, playNextNote: () => void, started: boolean) {
   ctx.clearRect(0, 0, SIZE, SIZE)
+
+  if (!started) {
+    const text = ctx.measureText("Haz clic para comenzar.");
+    const width = text.width;
+    const height = text.fontBoundingBoxAscent + text.fontBoundingBoxDescent;
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "48px arial"
+    ctx.fillText("Haz clic para comenzar.", (SIZE - width) / 2, (SIZE + height) / 2)
+    return;
+  }
 
   ctx.lineWidth = 3;
   for (const wall of Object.values(walls)) {
@@ -135,6 +191,8 @@ function animate(ctx: CanvasRenderingContext2D) {
   }
   
   if (collide) {
+    playNextNote();
+
     if (ball.x === target[0].x && ball.y === target[0].y) {
       target.shift();
       if (target.length === 0) {
@@ -155,22 +213,27 @@ function animate(ctx: CanvasRenderingContext2D) {
     }
   }
 
-
   if (ball.x === SIZE / 2) {
-    if (walls.up.mode === WallMode.Block && ball.y < SIZE / 2 || walls.down.mode === WallMode.Block && ball.y > SIZE / 2) {
-      ball.vx = -ball.vx;
-    }
-    if (walls.up.mode === WallMode.Mirror && ball.y < SIZE / 2 || walls.down.mode === WallMode.Mirror && ball.y > SIZE / 2) {
-      ball.vy = -ball.vy;
+    playNextNote();
+    switch (mode) {
+      case WallMode.Block:
+        ball.vx = -ball.vx;
+        break;
+
+      case WallMode.Mirror:
+        ball.vy = -ball.vy;
     }
   }
 
   if (ball.y === SIZE / 2) {
-    if (walls.left.mode === WallMode.Block && ball.x < SIZE / 2 || walls.right.mode === WallMode.Block && ball.x > SIZE / 2) {
-      ball.vy = -ball.vy;
-    }
-    if (walls.left.mode === WallMode.Mirror && ball.x < SIZE / 2 || walls.right.mode === WallMode.Mirror && ball.x > SIZE / 2) {
-      ball.vx = -ball.vx;
+    playNextNote();
+    switch (mode) {
+      case WallMode.Block:
+        ball.vy = -ball.vy;
+        break;
+
+      case WallMode.Mirror:
+        ball.vx = -ball.vx;
     }
   }
 }

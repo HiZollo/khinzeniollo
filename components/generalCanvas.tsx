@@ -6,8 +6,8 @@ interface GeneralCanvasProps {
   animate: (ctx: CanvasRenderingContext2D) => void
   onClick?: (x: number, y: number) => void
   onHover?: (x: number, y: number) => void
-  onKeyDown?: (key: string) => void
-  onKeyUp?: (key: string) => void
+  onKeyDown?: (code: string) => void
+  onKeyUp?: (code: string) => void
   width: number
   height: number
 }
@@ -25,10 +25,10 @@ export default function GeneralCanvas({ animate, onClick, onKeyDown, onKeyUp, on
       })
 
       document.addEventListener("keydown", e => {
-        onKeyDown?.(e.key);
+        onKeyDown?.(e.code);
       })
       document.addEventListener("keyup", e => {
-        onKeyUp?.(e.key);
+        onKeyUp?.(e.code);
       })
 
       return () => {
