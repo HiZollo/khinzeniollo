@@ -13,7 +13,7 @@ const SpanishNumber = [
 ]
 
 const LevelName = [
-  "¿Qué cosa hay aquí?", "Rosetta", "", "¿Dónde están?", "¿Cuánto?",
+  "¿Qué cosa hay aquí?", "Rosetta", "¿Cómo cantar?", "¿Dónde están?", "¿Cuánto?",
   "¿Cuál es?", "¿Quién es?"
 ]
 

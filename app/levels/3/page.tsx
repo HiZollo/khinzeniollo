@@ -70,7 +70,7 @@ export default function Tres() {
   if (loading) {
     return (
       <>
-        <h1>¿Qué cosa hay aquí?</h1>
+        <h1>¿Cómo cantar?</h1>
         <p>Cargando...</p>
       </>
     )
@@ -78,7 +78,7 @@ export default function Tres() {
 
   return (
     <>
-      <h1>¿Qué cosa hay aquí?</h1>
+      <h1>¿Cómo cantar?</h1>
       <GeneralCanvas
         animate={(ctx) => animate(ctx, playNote, started)}
         onKeyDown={onKeyDown}
