@@ -46,8 +46,7 @@ export default async function Dos() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  const slate = await loadImage('https://files.catbox.moe/ezp974.png')
-  // const slate = await loadImage('https://khinzeniollo.vercel.app/slate_background_2.png')
+  const slate = await loadImage(process.cwd() + '/public/slate_background_2.png')
   const background = ctx.createPattern(slate, 'repeat')
   ctx.fillStyle = background
   ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -72,8 +71,7 @@ export default async function Dos() {
   })
 
   ctx.translate(-300, -canvas.height-35)
-  const crack = await loadImage('https://files.catbox.moe/wsmgp7.png')
-  // const crack = await loadImage('https://khinzeniollo.vercel.app/crack.png')
+  const crack = await loadImage(process.cwd() + '/public/crack.png')
   const crack_effect = ctx.createPattern(crack, 'repeat')
   ctx.fillStyle = crack_effect
   ctx.fillRect(0, 0, canvas.width, canvas.height)
