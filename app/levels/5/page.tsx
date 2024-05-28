@@ -30,7 +30,6 @@ export default async function Cinco() {
            <li key={i}><Latex>{text}</Latex></li>
         )}
       </ul>}
-      <Latex>請問 $n$ 是多少？</Latex>
     </>
   )
 }
