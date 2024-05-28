@@ -79,6 +79,9 @@ export default function Tres() {
   return (
     <>
       <h1>¿Cómo cantar?</h1>
+      <p>Una pequeña caja de música, que según la leyenda es una reliquia de un gran hombre,</p>
+      <p>en una noche donde la luz de la luna ilumina la tierra, toca una melodía.</p>
+      <p>La melodía fluye silenciosamente en el corazón.</p>
       <GeneralCanvas
         animate={(ctx) => animate(ctx, playNote, started)}
         onKeyDown={onKeyDown}
