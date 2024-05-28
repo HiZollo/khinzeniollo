@@ -9,27 +9,7 @@ type Event = ChangeEvent<HTMLInputElement>;
 
 const names = ["Primer", "Segunta", "Tercer", "Cuarta", "Quinta", "Sexta", "Séptima", "Octava"];
 
-function reducer(state: string[], action: { index: number, value: string }): string[] {
-  state[action.index] = action.value;
-  return [...state];
-}
-
 export default function Cuatro() {
-  const [values, dispatch] = useReducer(reducer, Array<string>(8).fill(""));
-
-  function handleChange(event: Event, index: number) {
-    dispatch({ index, value: event.target.value });
-  }
-
-  function submit() {
-    fetch('/api/levels/4/check', {
-      method: 'POST',
-      body: JSON.stringify(values)
-    }).then(res => res.json()).then(data => {
-      alert(data.code)
-    })
-  }
-
   return (
     <>
       <h1>¿Dónde están?</h1>
@@ -43,22 +23,6 @@ export default function Cuatro() {
         width={SIZE}
         height={SIZE}
       ></GeneralCanvas>
-
-      <div style={{ margin: "30px", gap: "20px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-        <>
-          {names.map((name, i) => {
-            return (
-              <TextInput
-                key={i}
-                placeholder={`${name} Provincia`}
-                onChange={(e: Event) => handleChange(e, i)}
-                value={values[i]}
-              />
-            )
-          })}
-          <Button onClick={submit}>Enviar</Button>
-        </>
-      </div>
     </>
   )
 }
