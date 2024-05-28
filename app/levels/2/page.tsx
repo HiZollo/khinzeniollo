@@ -27,6 +27,8 @@ const LINE_HEIGHT = 30
 const CANVAS_WIDTH_HALF = CANVAS_WIDTH / 2
 
 export default async function Dos() {
+  console.log(process.cwd())
+  console.log(__dirname)
   const session = (await getServerSession(authOptions))!
 
   const index = getSectionIndex(session.user.id!)
