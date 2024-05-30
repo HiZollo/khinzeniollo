@@ -6,13 +6,14 @@ interface GeneralCanvasProps {
   animate: (ctx: CanvasRenderingContext2D) => void
   onClick?: (x: number, y: number) => void
   onHover?: (x: number, y: number) => void
-  onKeyDown?: (code: string) => void
-  onKeyUp?: (code: string) => void
+  onKeyDown?: (code: string, e: KeyboardEvent) => void
+  onKeyPress?: (code: string, e: KeyboardEvent) => void
+  onKeyUp?: (code: string, e: KeyboardEvent) => void
   width: number
   height: number
 }
 
-export default function GeneralCanvas({ animate, onClick, onKeyDown, onKeyUp, onHover, width, height }: GeneralCanvasProps) {
+export default function GeneralCanvas({ animate, onClick, onKeyDown, onKeyPress, onKeyUp, onHover, width, height }: GeneralCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [canvas, setCanvas] = useState<Canvas | null>(null);
 
@@ -25,17 +26,20 @@ export default function GeneralCanvas({ animate, onClick, onKeyDown, onKeyUp, on
       })
 
       document.addEventListener("keydown", e => {
-        onKeyDown?.(e.code);
+        onKeyDown?.(e.code, e);
+      })
+      document.addEventListener("keypress", e => {
+        onKeyPress?.(e.code, e);
       })
       document.addEventListener("keyup", e => {
-        onKeyUp?.(e.code);
+        onKeyUp?.(e.code, e);
       })
 
       return () => {
         cvs.destroy()
       }
     }
-  }, [animate, onHover])
+  }, [animate, onHover, onKeyDown, onKeyPress, onKeyUp])
 
   function handleClick(event: React.MouseEvent<HTMLCanvasElement>) {
     if (canvasRef.current) {

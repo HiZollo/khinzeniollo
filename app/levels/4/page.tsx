@@ -1,13 +1,9 @@
 "use client"
 
-import TextInput from "@/components/TextInput"
-import Button from "@/components/button";
 import GeneralCanvas from "@/components/generalCanvas"
-import { ChangeEvent, useReducer } from "react"
+import { ChangeEvent } from "react"
 
 type Event = ChangeEvent<HTMLInputElement>;
-
-const names = ["Primer", "Segunta", "Tercer", "Cuarta", "Quinta", "Sexta", "Séptima", "Octava"];
 
 export default function Cuatro() {
   return (

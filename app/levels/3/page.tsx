@@ -4,28 +4,77 @@ import { useEffect, useRef, useState } from 'react';
 import * as Tone from 'tone';
 import { Piano } from '@tonejs/piano';
 
-const SIZE = 600;
-const RADIUS = 10;
-const VELOCITY = 5;
+const SIZE = 608;
+const RADIUS = 8;
+const VELOCITY = 8;
 const DELTA = RADIUS - VELOCITY;
 
-const score = [
-                                                  ['G4'], ['G4'], 
-  ['C5'], ['C5'], ['C5'], ['E5'], ['G5'], ['G5'], ['G5'], ['C5'], 
-  ['B4'], ['B4'], ['B4'], ['E5'], ['G5'], ['G5'], ['G5'], ['G5'], 
-  ['A5'], ['A5'], ['A5'], ['B5'], ['C6'], ['C6'], ['A5'], ['A5'], 
-  ['G5'], ['G5'], ['G5'], ['G5'], ['G5'], ['G5'], ['E5'], ['D5'], 
-  ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['E5'], ['D5'], 
-  ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['D5'], ['E5'], 
-  ['D5'], ['D5'], ['D5'], ['A4'], ['B4'], ['B4'], ['C5'], ['D5'], 
-  ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], ['C5'], 
+const right: (undefined | [string, number])[] = [
+                                                                               ['G5', 2], 
+  ['C6', 3], undefined, undefined, ['E6', 1], ['G6', 3], undefined, undefined, ['C6', 1], 
+  ['B5', 3], undefined, undefined, ['E6', 1], ['G6', 3], undefined, undefined, ['G6', 1], 
+  ['A6', 3], undefined, undefined, ['B6', 1], ['C7', 3], undefined, undefined, ['A6', 2], 
+  undefined, ['G6', 3], undefined, undefined, undefined, undefined, ['E6', 1], ['D6', 1], 
+  ['C6', 3], undefined, undefined, ['C6', 1], ['C6', 3], undefined, ['E6', 1], ['D6', 1], 
+  ['C6', 3], undefined, undefined, ['C6', 1], ['C6', 2], undefined, ['D6', 1], ['E6', 1], 
+  ['D6', 2], undefined, undefined, ['A5', 1], ['B5', 2], undefined, ['D6', 2], undefined, 
+  ['C6', 4], undefined, undefined, undefined, undefined, undefined, 
+                                                                    ['G6', 2], undefined, 
+  ['E6', 3], undefined, undefined, ['D6', 1], ['C6', 2], undefined, ['G6', 2], undefined, 
+  ['B5', 4], undefined, undefined, undefined, undefined, undefined, ['A5', 1], ['B5', 1], 
+  ['A5', 3], undefined, undefined, ['B5', 1], ['A5', 2], undefined, ['G5', 2], undefined, 
+  ['E6', 4], undefined, undefined, undefined, undefined, undefined, ['G6', 2], undefined, 
+  ['E6', 3], undefined, undefined, ['D6', 1], ['C6', 2], undefined, ['G6', 2], undefined, 
+  ['B5', 4], undefined, undefined, undefined, undefined, undefined, ['A5', 1], ['B5', 1], 
+  ['C6', 3], undefined, undefined, ['C6', 1], ['C6', 2], undefined, ['D6', 1], ['E6', 1], 
+  ['D6', 4], undefined, undefined, undefined, undefined, undefined, undefined, 
+                                                                               ['G5', 2], 
+  ['C6', 3], undefined, undefined, ['E6', 1], ['G6', 3], undefined, undefined, ['C6', 1], 
+  ['B5', 3], undefined, undefined, ['E6', 1], ['G6', 3], undefined, undefined, ['G6', 1], 
+  ['A6', 3], undefined, undefined, ['B6', 1], ['C7', 3], undefined, undefined, ['A6', 2], 
+  undefined, ['G6', 3], undefined, undefined, undefined, undefined, ['E6', 1], ['D6', 1], 
+  ['C6', 3], undefined, undefined, ['C6', 1], ['C6', 3], undefined, ['E6', 1], ['D6', 1], 
+  ['C6', 3], undefined, undefined, ['C6', 1], ['C6', 2], undefined, ['D6', 1], ['E6', 1], 
+  ['D6', 2], undefined, undefined, ['A5', 1], ['B5', 2], undefined, ['D6', 2], undefined, 
+  ['C6', 4], undefined, undefined, undefined, undefined, undefined, undefined
 ]
-let scoreIndex = score.length - 1;
-// let scoreIndex = 0;
+const left: (undefined | [string, number])[] = [
+                                                                               ['G4', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], 
+  ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], 
+  ['F4', 1], ['C5', 1], ['F5', 1], ['C5', 1], ['F4', 1], ['C5', 1], ['F5', 1], ['C5', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], 
+  ['A3', 1], ['E4', 1], ['A4', 1], ['E4', 1], ['A3', 1], ['E4', 1], ['A4', 1], ['E4', 1], 
+  ['F3', 1], ['C4', 1], ['F4', 1], ['C4', 1], ['F3', 1], ['C4', 1], ['F4', 1], ['C4', 1], 
+  ['D4', 1], ['A4', 1], ['D5', 1], ['A4', 1], ['G3', 1], ['D4', 1], ['G4', 1], ['D4', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], 
+                                                                    ['C5', 1], ['G4', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], 
+  ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], 
+  ['F4', 1], ['C5', 1], ['F5', 1], ['C5', 1], ['G4', 1], ['D5', 1], ['G5', 1], ['D5', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], 
+  ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], 
+  ['F4', 1], ['C5', 1], ['F5', 1], ['C5', 1], ['F4', 1], ['C5', 1], ['F5', 1], ['C5', 1], 
+  ['G4', 1], ['D5', 1], ['G5', 1], ['D5', 1], ['B5', 2], undefined, undefined, 
+                                                                               undefined, 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], 
+  ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], ['E4', 1], ['B4', 1], ['E5', 1], ['B4', 1], 
+  ['F4', 1], ['C5', 1], ['F5', 1], ['C5', 1], ['F4', 1], ['C5', 1], ['F5', 1], ['C5', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], 
+  ['A3', 1], ['E4', 1], ['A4', 1], ['E4', 1], ['A3', 1], ['E4', 1], ['A4', 1], ['E4', 1], 
+  ['F3', 1], ['C4', 1], ['F4', 1], ['C4', 1], ['F3', 1], ['C4', 1], ['F4', 1], ['C4', 1], 
+  ['D4', 1], ['A4', 1], ['D5', 1], ['A4', 1], ['G3', 1], ['D4', 1], ['G4', 1], ['D4', 1], 
+  ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], 
+]
+
+// let index = 0;
+let index = left.length - 1;
 
 export default function Tres() {
   const [loading, setLoading] = useState(true);
   const [started, setStarted] = useState(false);
+  const [finished, setFinished] = useState(false);
   const pianoRef = useRef<Piano>();
 
   useEffect(() => {
@@ -37,7 +86,9 @@ export default function Tres() {
     piano.load().then(() => {
       pianoRef.current = piano;
       setLoading(false);
-    });
+    }).catch(console.log);
+
+    game.reset();
 
     return () => {
       if (pianoRef.current) {
@@ -46,25 +97,54 @@ export default function Tres() {
     };
   }, []);
 
-  async function playNote() {
+  async function playNote(direction: number) {
     if (!pianoRef.current) return;
 
     if (Tone.getContext().state !== 'running') {
       await Tone.start();
     }
 
-    const notes = score[scoreIndex];
-    scoreIndex = scoreIndex === 0 ? score.length - 1 : scoreIndex - 1;
-    // scoreIndex = scoreIndex === score.length - 1 ? 0 : scoreIndex + 1;
+    const leftNote = left[index];
+    const rightNote = right[index];
 
-    for (const note of notes) {
-      pianoRef.current.keyDown({ note, time: Tone.now(), velocity: 0.1 });
-      pianoRef.current.keyUp({ note, time: Tone.now() + 1.5 });
+    // index += direction;
+    // if (index > left.length - 1) {
+    //   setFinished(true);
+
+    //   game.ball.x += game.ball.vx;
+    //   game.ball.y += game.ball.vy;
+    //   game.ball.vx = -game.ball.vx;
+    //   game.ball.vy = -game.ball.vy;
+
+    //   index = left.length - 1;
+    //   return;
+    // }
+
+    index -= direction;
+    if (index < 0) {
+      setFinished(true);
+      game.sequence.pop();
+      game.ball.x += game.ball.vx;
+      game.ball.y += game.ball.vy;
+      game.ball.vx = -game.ball.vx;
+      game.ball.vy = -game.ball.vy;
+      index = 0;
+      return;
+    }
+
+    if (leftNote) {
+      pianoRef.current.keyDown({ note: leftNote[0], time: Tone.now(), velocity: 0.1 });
+      pianoRef.current.keyUp({ note: leftNote[0], time: Tone.now() + 1.5 * (leftNote[1] ?? 1) });
+    }
+    if (rightNote) {
+      pianoRef.current.keyDown({ note: rightNote[0], time: Tone.now(), velocity: 0.1 });
+      pianoRef.current.keyUp({ note: rightNote[0], time: Tone.now() + 1.5 * (rightNote[1] ?? 1) });
     }
   }
 
   function onclick() {
     setStarted(true)
+    game.reset();
   }
 
   if (loading) {
@@ -79,11 +159,19 @@ export default function Tres() {
   return (
     <>
       <h1>¿Cómo cantar?</h1>
-      <p>Una pequeña caja de música, que según la leyenda es una reliquia de un gran hombre,</p>
-      <p>en una noche donde la luz de la luna ilumina la tierra, toca una melodía.</p>
+      <p>Una pequeña caja de música, que según la leyenda es una reliquia de un gran hombre.</p>
+      <p>Retrocediendo en el tiempo, en una noche donde la luz de la luna ilumina la tierra, toca una melodía.</p>
       <p>La melodía fluye silenciosamente en el corazón.</p>
+      <p>Por favor, cuida con esmero las piezas dentro de la caja, no las rompas.</p>
       <GeneralCanvas
-        animate={(ctx) => animate(ctx, playNote, started)}
+        animate={(ctx) => {
+          const pass = animate(ctx, playNote, started, finished);
+          // if (!pass) {
+          //   setStarted(false);
+          //   leftIndex = 0;
+          //   rightIndex = 0;
+          // }
+        }}
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
         onClick={onclick}
@@ -98,72 +186,152 @@ enum WallMode {
   Through, Block, Mirror
 }
 
-const ball = { x: SIZE / 4 + RADIUS, y: RADIUS, vx: -VELOCITY, vy: -VELOCITY, r: RADIUS };
-const walls: Record<"up" | "down" | "left" | "right", { from: [number, number], to: [number, number], mode: WallMode }> = {
-  up:    { from: [SIZE / 2, 0],    to: [SIZE / 2, SIZE / 3],     mode: WallMode.Through }, 
-  left:  { from: [0, SIZE / 2],    to: [SIZE / 3, SIZE / 2],     mode: WallMode.Through }, 
-  right: { from: [SIZE, SIZE / 2], to: [SIZE * 2 / 3, SIZE / 2], mode: WallMode.Through }, 
-  down:  { from: [SIZE / 2, SIZE], to: [SIZE / 2, SIZE * 2 / 3], mode: WallMode.Through }, 
-} as const;
-const targets = [
-  [{ x: SIZE     / 4 + DELTA, y: DELTA }       , { x: DELTA       , y: SIZE     / 4 + DELTA }], 
-  [{ x: SIZE * 3 / 4 - DELTA, y: DELTA }       , { x: SIZE - DELTA, y: SIZE     / 4 + DELTA }], 
-  [{ x: SIZE     / 4 + DELTA, y: SIZE - DELTA }, { x: DELTA       , y: SIZE * 3 / 4 - DELTA }], 
-  [{ x: SIZE * 3 / 4 - DELTA, y: SIZE - DELTA }, { x: SIZE - DELTA, y: SIZE * 3 / 4 - DELTA }], 
-]
+const game: {
+  ball: { x: number, y: number, vx: number, vy: number, r: number }, 
+  walls: Record<'up' | 'left' | 'right' | 'down', { from: [number, number], to: [number, number] }>, 
+  targets: [{ x: number, y: number }, { x: number, y: number }][], 
+  target: { x: number, y: number }[], 
+  lastTarget: number, 
+  mode: WallMode, 
+  blockKey: boolean, 
+  mirrorKey: boolean, 
+  sequence: WallMode[], 
+  reset(): void
+} = {
+  ball: { x: SIZE / 4 + RADIUS, y: RADIUS, vx: -VELOCITY, vy: -VELOCITY, r: RADIUS }, 
+  walls: {
+    up:    { from: [SIZE / 2, 0],    to: [SIZE / 2, SIZE / 3],    }, 
+    left:  { from: [0, SIZE / 2],    to: [SIZE / 3, SIZE / 2],    }, 
+    right: { from: [SIZE, SIZE / 2], to: [SIZE * 2 / 3, SIZE / 2] }, 
+    down:  { from: [SIZE / 2, SIZE], to: [SIZE / 2, SIZE * 2 / 3] }, 
+  }, 
+  targets: [
+    [{ x: SIZE     / 4 + DELTA, y: DELTA }       , { x: DELTA       , y: SIZE     / 4 + DELTA }], 
+    [{ x: SIZE * 3 / 4 - DELTA, y: DELTA }       , { x: SIZE - DELTA, y: SIZE     / 4 + DELTA }], 
+    [{ x: SIZE     / 4 + DELTA, y: SIZE - DELTA }, { x: DELTA       , y: SIZE * 3 / 4 - DELTA }], 
+    [{ x: SIZE * 3 / 4 - DELTA, y: SIZE - DELTA }, { x: SIZE - DELTA, y: SIZE * 3 / 4 - DELTA }], 
+  ], 
+  
+  target: [], 
+  lastTarget: 0, 
+  mode: WallMode.Through, 
+  blockKey: false, 
+  mirrorKey: false, 
+  sequence: [], 
 
-let target = structuredClone(targets[0]);
-let lastTarget = 0;
-let mode: WallMode = WallMode.Through;
-let blockKey: boolean = false;
-let mirrorKey: boolean = false;
+  reset() {
+    this.ball = { x: SIZE / 4 + RADIUS, y: RADIUS, vx: -VELOCITY, vy: -VELOCITY, r: RADIUS };
+    this.walls = {
+      up:    { from: [SIZE / 2, 0],    to: [SIZE / 2, SIZE / 3],    }, 
+      left:  { from: [0, SIZE / 2],    to: [SIZE / 3, SIZE / 2],    }, 
+      right: { from: [SIZE, SIZE / 2], to: [SIZE * 2 / 3, SIZE / 2] }, 
+      down:  { from: [SIZE / 2, SIZE], to: [SIZE / 2, SIZE * 2 / 3] }, 
+    };
+    this.targets = [
+      [{ x: SIZE     / 4 + DELTA, y: DELTA }       , { x: DELTA       , y: SIZE     / 4 + DELTA }], 
+      [{ x: SIZE * 3 / 4 - DELTA, y: DELTA }       , { x: SIZE - DELTA, y: SIZE     / 4 + DELTA }], 
+      [{ x: SIZE     / 4 + DELTA, y: SIZE - DELTA }, { x: DELTA       , y: SIZE * 3 / 4 - DELTA }], 
+      [{ x: SIZE * 3 / 4 - DELTA, y: SIZE - DELTA }, { x: SIZE - DELTA, y: SIZE * 3 / 4 - DELTA }], 
+    ];
 
-function onKeyDown(code: string) {
+    this.target = structuredClone(this.targets[0]);
+    this.lastTarget = 0;
+    this.mode = WallMode.Through;
+    this.blockKey = false;
+    this.mirrorKey = false;
+    this.sequence = [];
+  }
+}
+
+function onKeyDown(code: string, e: KeyboardEvent) {
+  if (e.repeat) return;
+
   switch (code) {
     case 'KeyZ':
-      mode = WallMode.Block;
-      blockKey = true;
+      game.mode = WallMode.Block;
+      game.blockKey = true;
       break;
     case 'KeyX':
-      mode = WallMode.Mirror;
-      mirrorKey = true;
+      game.mode = WallMode.Mirror;
+      game.mirrorKey = true;
       break;
   }
-  walls.up.mode = walls.left.mode = walls.down.mode = walls.right.mode = mode;
 }
 
 function onKeyUp(code: string) {
   switch (code) {
     case 'KeyZ':
-      mode = mirrorKey ? WallMode.Mirror : WallMode.Through;
-      blockKey = false;
+      game.mode = game.mirrorKey ? WallMode.Mirror : WallMode.Through;
+      game.blockKey = false;
       break;
     case 'KeyX':
-      mode = blockKey ? WallMode.Block : WallMode.Through;
-      mirrorKey = false;
+      game.mode = game.blockKey ? WallMode.Block : WallMode.Through;
+      game.mirrorKey = false;
       break;
   }
-  walls.up.mode = walls.left.mode = walls.down.mode = walls.right.mode = mode;
 }
 
-function animate(ctx: CanvasRenderingContext2D, playNextNote: () => void, started: boolean) {
+function animate(ctx: CanvasRenderingContext2D, playNextNote: (dir: number) => void, started: boolean, finished: boolean): boolean {
   ctx.clearRect(0, 0, SIZE, SIZE)
 
+  if (finished) {
+    if (!game.sequence.length) {
+      return true;
+    }
+
+    game.mode = game.sequence[game.sequence.length - 1];
+    for (const wall of Object.values(game.walls)) {
+      ctx.strokeStyle = 
+        game.mode === WallMode.Block ? "red" : 
+        game.mode === WallMode.Mirror ? "blue" : "green"
+      ctx.beginPath();
+      ctx.moveTo(...wall.from);
+      ctx.lineTo(...wall.to);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = "white"
+    ctx.beginPath()
+    ctx.arc(game.ball.x, game.ball.y, RADIUS, 0, 2 * Math.PI, false)
+    ctx.fill()
+
+    const collideEdge = physics();
+    const collideWall = contactWall();
+
+    if (collideEdge || collideWall) {
+      playNextNote(-1);
+      game.sequence.pop();
+    }
+
+    return true;
+  }
+
   if (!started) {
-    const text = ctx.measureText("Haz clic para comenzar.");
-    const width = text.width;
-    const height = text.fontBoundingBoxAscent + text.fontBoundingBoxDescent;
+    let text = ctx.measureText("Haz clic para comenzar.");
+    let width = text.width;
+    let height = text.fontBoundingBoxAscent + text.fontBoundingBoxDescent;
     ctx.fillStyle = "#ffffff"
     ctx.font = "48px arial"
-    ctx.fillText("Haz clic para comenzar.", (SIZE - width) / 2, (SIZE + height) / 2)
-    return;
+    ctx.fillText("Haz clic para comenzar.", (SIZE - width) / 2, (SIZE + height) / 2 - 84)
+    
+    text = ctx.measureText("Presiona Z/X para cambiar");
+    width = text.width;
+    height = text.fontBoundingBoxAscent + text.fontBoundingBoxDescent;
+    ctx.fillText("Presiona Z/X para cambiar", (SIZE - width) / 2, (SIZE + height) / 2 - 24)
+    
+    text = ctx.measureText("los modos de control");
+    width = text.width;
+    height = text.fontBoundingBoxAscent + text.fontBoundingBoxDescent;
+    ctx.fillText("los modos de control", (SIZE - width) / 2, (SIZE + height) / 2 + 36)
+
+    return false;
   }
 
   ctx.lineWidth = 3;
-  for (const wall of Object.values(walls)) {
+  for (const wall of Object.values(game.walls)) {
     ctx.strokeStyle = 
-      wall.mode === WallMode.Through ? "green" : 
-      wall.mode === WallMode.Block ? "red" : "blue"
+      game.mode === WallMode.Block ? "red" : 
+      game.mode === WallMode.Mirror ? "blue" : "green"
     ctx.beginPath();
     ctx.moveTo(...wall.from);
     ctx.lineTo(...wall.to);
@@ -172,71 +340,92 @@ function animate(ctx: CanvasRenderingContext2D, playNextNote: () => void, starte
 
   ctx.fillStyle = "purple"
   ctx.beginPath()
-  ctx.arc(target[0].x, target[0].y, RADIUS, 0, 2 * Math.PI, false)
+  ctx.arc(game.target[0].x, game.target[0].y, RADIUS, 0, 2 * Math.PI, false)
   ctx.fill()
+
+  ctx.fillStyle = "orange"
+  ctx.fillRect(game.target[0].x - RADIUS, game.target[0].y - RADIUS, RADIUS * 2, RADIUS * 2);
 
   ctx.fillStyle = "white"
   ctx.beginPath()
-  ctx.arc(ball.x, ball.y, RADIUS, 0, 2 * Math.PI, false)
+  ctx.arc(game.ball.x, game.ball.y, RADIUS, 0, 2 * Math.PI, false)
   ctx.fill()
 
-  ball.x += ball.vx;
-  ball.y += ball.vy;
-
-  let collide = false;
-  if (ball.x < RADIUS || SIZE - RADIUS < ball.x) {
-    ball.vx = -ball.vx;
-    collide = true;
-  }
-  if (ball.y < RADIUS || SIZE - RADIUS < ball.y) {
-    ball.vy = -ball.vy;
-    collide = true;
-  }
+  const collide = physics();
   
   if (collide) {
-    playNextNote();
+    game.sequence.push(game.mode);
+    playNextNote(1);
 
-    if (ball.x === target[0].x && ball.y === target[0].y) {
-      target.shift();
-      if (target.length === 0) {
-        let r = lastTarget
-        while (r === lastTarget) {
-          r = Math.floor(Math.random() * targets.length);
+    if (game.ball.x === game.target[0].x && game.ball.y === game.target[0].y) {
+      game.target.shift();
+      if (game.target.length === 0) {
+        let r = game.lastTarget
+        while (r === game.lastTarget) {
+          r = Math.floor(Math.random() * game.targets.length);
         }
-        let [a, b] = targets[r];
+        let [a, b] = game.targets[r];
         if (Math.random() > 0.5) {
           [a, b] = [b, a];
         }
-        lastTarget = r;
-        target = [a, b];
+        game.lastTarget = r;
+        game.target = [a, b];
       }
     }
     else {
-      // alert("You suck");
+      return false;
     }
   }
 
-  if (ball.x === SIZE / 2) {
-    playNextNote();
-    switch (mode) {
+  if (contactWall()) {
+    game.sequence.push(game.mode);
+    game.mode = WallMode.Through;
+    playNextNote(1);
+
+  }
+
+  return true;
+}
+
+function physics(): boolean {
+  game.ball.x += game.ball.vx;
+  game.ball.y += game.ball.vy;
+
+  if (game.ball.x < RADIUS || SIZE - RADIUS < game.ball.x) {
+    game.ball.vx = -game.ball.vx;
+    return true;
+  }
+  if (game.ball.y < RADIUS || SIZE - RADIUS < game.ball.y) {
+    game.ball.vy = -game.ball.vy;
+    return true;
+  }
+  return false;
+}
+
+function contactWall(): boolean {
+  if (game.ball.x === SIZE / 2) {
+    switch (game.mode) {
       case WallMode.Block:
-        ball.vx = -ball.vx;
+        game.ball.vx = -game.ball.vx;
         break;
 
       case WallMode.Mirror:
-        ball.vy = -ball.vy;
+        game.ball.vy = -game.ball.vy;
     }
+    return true;
   }
 
-  if (ball.y === SIZE / 2) {
-    playNextNote();
-    switch (mode) {
+  if (game.ball.y === SIZE / 2) {
+    switch (game.mode) {
       case WallMode.Block:
-        ball.vy = -ball.vy;
+        game.ball.vy = -game.ball.vy;
         break;
 
       case WallMode.Mirror:
-        ball.vx = -ball.vx;
+        game.ball.vx = -game.ball.vx;
     }
+    return true;
   }
+
+  return false;
 }
