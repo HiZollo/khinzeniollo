@@ -68,13 +68,9 @@ const left: (undefined | [string, number])[] = [
   ['C4', 1], ['G4', 1], ['C5', 1], ['G4', 1], ['C4', 1], ['G4', 1], ['C5', 1], 
 ]
 
-// let index = 0;
-let index = left.length - 1;
-
 export default function Tres() {
   const [loading, setLoading] = useState(true);
   const [started, setStarted] = useState(false);
-  const [finished, setFinished] = useState(false);
   const pianoRef = useRef<Piano>();
 
   useEffect(() => {
@@ -104,33 +100,8 @@ export default function Tres() {
       await Tone.start();
     }
 
-    const leftNote = left[index];
-    const rightNote = right[index];
-
-    // index += direction;
-    // if (index > left.length - 1) {
-    //   setFinished(true);
-
-    //   game.ball.x += game.ball.vx;
-    //   game.ball.y += game.ball.vy;
-    //   game.ball.vx = -game.ball.vx;
-    //   game.ball.vy = -game.ball.vy;
-
-    //   index = left.length - 1;
-    //   return;
-    // }
-
-    index -= direction;
-    if (index < 0) {
-      setFinished(true);
-      game.sequence.pop();
-      game.ball.x += game.ball.vx;
-      game.ball.y += game.ball.vy;
-      game.ball.vx = -game.ball.vx;
-      game.ball.vy = -game.ball.vy;
-      index = 0;
-      return;
-    }
+    const leftNote = left[game.index];
+    const rightNote = right[game.index];
 
     if (leftNote) {
       pianoRef.current.keyDown({ note: leftNote[0], time: Tone.now(), velocity: 0.1 });
@@ -140,6 +111,8 @@ export default function Tres() {
       pianoRef.current.keyDown({ note: rightNote[0], time: Tone.now(), velocity: 0.1 });
       pianoRef.current.keyUp({ note: rightNote[0], time: Tone.now() + 1.5 * (rightNote[1] ?? 1) });
     }
+
+    game.index -= direction;
   }
 
   function onclick() {
@@ -166,12 +139,10 @@ export default function Tres() {
       <p>Por favor, cuida con esmero las piezas dentro de la caja, no las rompas.</p>
       <GeneralCanvas
         animate={(ctx) => {
-          const pass = animate(ctx, playNote, started, finished);
-          if (!pass) {
+          const alive = animate(ctx, playNote, started);
+          if (!alive) {
             setStarted(false);
             game.reset();
-            index = left.length - 1;
-            // index = 0;
           }
         }}
         onKeyDown={onKeyDown}
@@ -198,6 +169,8 @@ const game: {
   blockKey: boolean, 
   mirrorKey: boolean, 
   sequence: WallMode[], 
+  index: number, 
+  finished: boolean, 
   reset(): void
 } = {
   ball: { x: SIZE / 4 + RADIUS, y: RADIUS, vx: -VELOCITY, vy: -VELOCITY, r: RADIUS }, 
@@ -220,6 +193,8 @@ const game: {
   blockKey: false, 
   mirrorKey: false, 
   sequence: [], 
+  index: left.length - 1, 
+  finished: false, 
 
   reset() {
     this.ball = { x: SIZE / 4 + RADIUS, y: RADIUS, vx: -VELOCITY, vy: -VELOCITY, r: RADIUS };
@@ -242,6 +217,8 @@ const game: {
     this.blockKey = false;
     this.mirrorKey = false;
     this.sequence = [];
+    this.index = left.length - 1;
+    this.finished = false;
   }
 }
 
@@ -273,10 +250,19 @@ function onKeyUp(code: string) {
   }
 }
 
-function animate(ctx: CanvasRenderingContext2D, playNextNote: (dir: number) => void, started: boolean, finished: boolean): boolean {
+function animate(ctx: CanvasRenderingContext2D, playNextNote: (dir: number) => void, started: boolean): boolean {
   ctx.clearRect(0, 0, SIZE, SIZE)
 
-  if (finished) {
+  if (game.index < 0) {
+    game.finished = true;
+    game.ball.x += game.ball.vx;
+    game.ball.y += game.ball.vy;
+    game.ball.vx = -game.ball.vx;
+    game.ball.vy = -game.ball.vy;
+    game.index = 0;
+  }
+
+  if (game.finished) {
     if (!game.sequence.length) {
       return true;
     }
