@@ -79,6 +79,7 @@ export default async function Dos() {
   return (
     <>
       <h1>Rosetta</h1>
+      <p>Las losas desenterrada en el este de España.</p>
       <p>Esto es la última leyenda creada por la leyenda.</p>
       <p>Léela y responde las preguntas.</p>
       <Image src={canvas.toDataURL()} alt="" width={canvas.width} height={canvas.height} />
