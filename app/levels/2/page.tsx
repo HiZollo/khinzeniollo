@@ -1,6 +1,5 @@
 import Input from '@/components/TextInput'
 import Button from '@/components/button'
-import styles from './page.module.css'
 import { createCanvas, loadImage } from 'canvas'
 import Image from 'next/image'
 import { getServerSession } from 'next-auth/next'
