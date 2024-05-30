@@ -117,7 +117,7 @@
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "e" }, 
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "g" }, 
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "a" }, 
-      { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 14, "h": 36, "vx": 0, "vy": 0.5, "char": "l" }, 
+      { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 12, "h": 36, "vx": 0, "vy": 0.5, "char": "l" }, 
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "o" }, 
       { "id": "", "moved": false, "group": 3, "x": 0, "y": 0, "w": 14, "h": 14, "vx": 0, "vy": 0.5, "char": "." }
     ], [

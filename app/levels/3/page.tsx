@@ -143,8 +143,9 @@ export default function Tres() {
   }
 
   function onclick() {
-    setStarted(true)
-    game.reset();
+    if (!started) {
+      setStarted(true)
+    }
   }
 
   if (loading) {
@@ -166,11 +167,12 @@ export default function Tres() {
       <GeneralCanvas
         animate={(ctx) => {
           const pass = animate(ctx, playNote, started, finished);
-          // if (!pass) {
-          //   setStarted(false);
-          //   leftIndex = 0;
-          //   rightIndex = 0;
-          // }
+          if (!pass) {
+            setStarted(false);
+            game.reset();
+            index = left.length - 1;
+            // index = 0;
+          }
         }}
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
@@ -324,7 +326,7 @@ function animate(ctx: CanvasRenderingContext2D, playNextNote: (dir: number) => v
     height = text.fontBoundingBoxAscent + text.fontBoundingBoxDescent;
     ctx.fillText("los modos de control", (SIZE - width) / 2, (SIZE + height) / 2 + 36)
 
-    return false;
+    return true;
   }
 
   ctx.lineWidth = 3;
@@ -337,11 +339,6 @@ function animate(ctx: CanvasRenderingContext2D, playNextNote: (dir: number) => v
     ctx.lineTo(...wall.to);
     ctx.stroke();
   }
-
-  ctx.fillStyle = "purple"
-  ctx.beginPath()
-  ctx.arc(game.target[0].x, game.target[0].y, RADIUS, 0, 2 * Math.PI, false)
-  ctx.fill()
 
   ctx.fillStyle = "orange"
   ctx.fillRect(game.target[0].x - RADIUS, game.target[0].y - RADIUS, RADIUS * 2, RADIUS * 2);
@@ -381,7 +378,6 @@ function animate(ctx: CanvasRenderingContext2D, playNextNote: (dir: number) => v
     game.sequence.push(game.mode);
     game.mode = WallMode.Through;
     playNextNote(1);
-
   }
 
   return true;

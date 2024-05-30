@@ -1,11 +1,10 @@
 'use client'
 import GeneralCanvas from '@/components/generalCanvas'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import data from "./data.json";
 
 const SIZE = 600;
 const COSA_SIZE = 210;
-const IMAGE = new ImageData(new Uint8ClampedArray(data.data), COSA_SIZE, COSA_SIZE);
 
 interface Point {
   id: string;
@@ -29,18 +28,26 @@ enum Group {
 }
 
 export default function Uno() {
+  const [image, setImage] = useState<ImageData>();
+
   useEffect(() => {
-    // @ts-ignore
-    globalThis.test = function () {
-      console.log("hi");
-    }
-  });
+    setImage(new ImageData(new Uint8ClampedArray(data.data), COSA_SIZE, COSA_SIZE));
+  }, []);
+
+  if (!image) {
+    return (
+      <>
+        <h1>¿Qué cosa hay aquí?</h1>
+        <p>Cargando...</p>
+      </>
+    )
+  }
 
   return (
     <>
       <h1>¿Qué cosa hay aquí?</h1>
       <GeneralCanvas
-        animate={animate}
+        animate={(ctx) => animate(ctx, image)}
         onHover={onHover}
         width={SIZE}
         height={SIZE}
@@ -60,13 +67,13 @@ let cosaAlpha = 1;
 
 const nAnswer = points.filter(({ group }) => group === Group.Answer).length;
 
-function animate(ctx: CanvasRenderingContext2D) {
+function animate(ctx: CanvasRenderingContext2D, image: ImageData) {
   ctx.clearRect(0, 0, SIZE, SIZE)
 
   points.forEach(({ x, y, w, h, char }) => {
-    ctx.strokeStyle = "#ff0000"
-    ctx.lineWidth = 2
-    ctx.strokeRect(x - w/2, y - h/2, w, h)
+    // ctx.strokeStyle = "#ff0000"
+    // ctx.lineWidth = 2
+    // ctx.strokeRect(x - w/2, y - h/2, w, h)
   
     ctx.fillStyle = "#ffffff"
     ctx.font = "48px arial"
@@ -112,7 +119,7 @@ function animate(ctx: CanvasRenderingContext2D) {
       break;
 
     case Stage.Cosa:
-      ctx.putImageData(IMAGE, (SIZE - COSA_SIZE) / 2, (SIZE - COSA_SIZE) / 2);
+      ctx.putImageData(image, (SIZE - COSA_SIZE) / 2, (SIZE - COSA_SIZE) / 2);
       
       ctx.globalAlpha = cosaAlpha;
       cosaAlpha = Math.max(cosaAlpha - 0.005, 0);
