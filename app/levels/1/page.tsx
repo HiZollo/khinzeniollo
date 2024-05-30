@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import data from "./data.json";
 
 const SIZE = 600;
+const COSA_SIZE = 210;
+const IMAGE = new ImageData(new Uint8ClampedArray(data.data), COSA_SIZE, COSA_SIZE);
 
 interface Point {
   id: string;
@@ -19,7 +21,7 @@ interface Point {
 }
 
 enum Stage {
-  Normal, Gocha, Dropping, Si, Otra
+  Normal, Gocha, Dropping, Followup, Cosa
 }
 
 enum Group {
@@ -49,12 +51,12 @@ export default function Uno() {
 
 data.points.forEach(expand);
 data.answers.forEach(expand);
-expand(data.si);
-expand(data.otra);
+data.followup.forEach(expand);
 
 let points = structuredClone(data.points).flat().filter(({ char }) => char !== ' ')
 let stage = Stage.Normal;
 let ans: Point[] = [];
+let cosaAlpha = 1;
 
 const nAnswer = points.filter(({ group }) => group === Group.Answer).length;
 
@@ -92,23 +94,31 @@ function animate(ctx: CanvasRenderingContext2D) {
 
     case Stage.Dropping:
       if (points.length === 0) {
-        stage = Stage.Si;
-        points = data.si.filter(({ char }) => char !== ' ');
+        stage = Stage.Followup;
+        points = data.followup[0].filter(({ char }) => char !== ' ');
+        data.followup.shift();
       }
       break;
 
-    case Stage.Si:
+    case Stage.Followup:
       if (points.length === 0) {
-        stage = Stage.Otra;
-        points = data.otra.filter(({ char }) => char !== ' ');
+        if (!data.followup.length) {
+          stage = Stage.Cosa;
+          break;
+        }
+        points = data.followup[0].filter(({ char }) => char !== ' ');
+        data.followup.shift();
       }
       break;
 
-    case Stage.Otra:
-      if (points.length === 0) {
-        stage = Stage.Otra;
-        points = data.otra;
-      }
+    case Stage.Cosa:
+      ctx.putImageData(IMAGE, (SIZE - COSA_SIZE) / 2, (SIZE - COSA_SIZE) / 2);
+      
+      ctx.globalAlpha = cosaAlpha;
+      cosaAlpha = Math.max(cosaAlpha - 0.005, 0);
+      ctx.fillStyle = "black";
+      ctx.fillRect((SIZE - COSA_SIZE) / 2, (SIZE - COSA_SIZE) / 2, COSA_SIZE, COSA_SIZE);
+      ctx.globalAlpha = 1;
       break;
   }
 }
@@ -184,7 +194,7 @@ function checkNormal() {
   if (points.filter(({ moved, group }) => group === Group.Answer && !moved).length !== nAnswer) return -1;
 
   const excLen = points.filter(({ group }) => group === Group.Exclamation).length;
-  if (excLen === 1) return 0;
+  if (excLen === 1) return -1;
 
   const punLen = points.filter(({ group }) => group === Group.Period).length;
   return excLen + punLen;
