@@ -13,7 +13,7 @@ const constraints = [
   '令 $n = x^2 y^3 z^4 w^5$，$(x,y,z,w)$ 有唯一非負整數解',
   '$114514$ 可以從 $n$ 的其中一個質因數去掉頭和尾一些數字得到',
   '$\\cos{n\\pi}=-1$',
-  '定義函數 $$f(x) = \\sum_{i=0}^{\\infty}\\frac{e^{-i\\pi}}{\\sec{(n^i\\pi x)}}$$則如果數列 $n_j \\rightarrow n$，保證 $f(n_j) \\rightarrow f(n)$'
+  '定義函數 $$f(x) = \\sum_{i=0}^{\\infty}\\frac{e^{-i\\pi}}{\\sec{(n^i\\pi x)}}$$則如果數列 $n_j$ 收斂到 $n$，則數列 $f(n_j)$ 收斂到 $f(n)$'
 ]
 
 export default async function Cinco() {
