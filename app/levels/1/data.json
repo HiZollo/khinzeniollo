@@ -136,7 +136,7 @@
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 47, "h": 36, "vx": 0, "vy": 0.5, "char": "W" }, 
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 27, "h": 36, "vx": 0, "vy": 0.5, "char": "b" }, 
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "o" }, 
-      { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "z" }
+      { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "Z" }
     ], [
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 34, "h": 36, "vx": 0, "vy": 0.5, "char": "A" }, 
       { "id": "", "moved": false, "group": 1, "x": 0, "y": 0, "w": 26, "h": 26, "vx": 0, "vy": 0.5, "char": "q" }, 
