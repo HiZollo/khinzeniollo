@@ -30,6 +30,12 @@ export default async function Cinco() {
            <li key={i}><Latex>{text}</Latex></li>
         )}
       </ul>}
+      <p>以下是提示一新增的條件：</p>
+      <ul style={{ textAlign: 'left', lineHeight: '30px' }}>
+        <li><Latex>$n$ 可以寫成 $9$ 個立方數的和</Latex></li>
+        <li><Latex>$n$ 的每位數字和落在 $150$ 和 $160$ 之間（包含邊界）</Latex></li>
+        <li><Latex>$n^{"{"}100{"}"} = 1 + k \cdot 5^3$，其中 $k$ 是一個整數</Latex></li>
+      </ul>
     </>
   )
 }
